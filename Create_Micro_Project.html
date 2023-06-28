@@ -1,0 +1,448 @@
+
+    <!doctype html>
+    <html lang="de">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width = device-width, initial-scale = 1.0" />
+        <title>Microprogramm</title>
+        <meta name="description" content="Beschreibungstext">
+        <!-- <link rel="shortcut icon" href="favicon.ico" /> -->
+        <!-- <link rel="stylesheet" href="style.css"> -->
+    </head>
+
+    <body class="body">
+
+        <!-- header -->
+        <header>
+            <h1>
+                Mikroprogramm
+            </h1>
+        </header>
+
+        <!-- main -->
+        <div>
+            <button id="" class="execute-btn" onclick="execute()">
+                Execute
+            </button>
+            <table class="table">
+                <tr>
+                    <td>
+                        <select id="regA" class="btn-Register" onchange="registerA()">
+                            <option value="" disabled selected>Reg-A</option>
+                            <option value="MAR">MAR</option>
+                            <option value="MDR">MDR</option>
+                            <option value="PC">PC</option>
+                            <option value="MBR">MBR</option>
+                            <option value="SP">SP</option>
+                            <option value="LV">LV</option>
+                            <option value="CPP">CPP</option>
+                            <option value="TOS">TOS</option>
+                            <option value="OPC">OPC</option>
+                            <option value="H">H</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button id="" class="btn" onclick="decrease()">
+                            Decrease
+                        </button>
+                    </td>
+                    <td>
+                        <button id="" class="btn" onclick="increase()">
+                            Increase
+                        </button>
+                    </td>
+                    <td>
+                        <button id="" class="btn" onclick="add()">
+                            Add
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <select id="regB" class="btn-Register" onchange="registerB()">
+                            <option value="" disabled selected>Reg-B</option>
+                            <option value="MAR">MAR</option>
+                            <option value="MDR">MDR</option>
+                            <option value="PC">PC</option>
+                            <option value="MBR">MBR</option>
+                            <option value="SP">SP</option>
+                            <option value="LV">LV</option>
+                            <option value="CPP">CPP</option>
+                            <option value="TOS">TOS</option>
+                            <option value="OPC">OPC</option>
+                            <option value="H">H</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button id="" class="btn" onclick="pop()">
+                            Pop
+                        </button>
+                    </td>
+                    <td>
+                        <button id="" class="btn" onclick="push()">
+                            Push
+                        </button>
+                    </td>
+                    <td>
+                        <button id="" class="btn" onclick="jumpZero()">
+                            Jumpzero
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <select id="regC" class="btn-Register" onchange="registerC()">
+                            <option value="" disabled selected>Reg-C</option>
+                            <option value="MAR">MAR</option>
+                            <option value="MDR">MDR</option>
+                            <option value="PC">PC</option>
+                            <option value="MBR">MBR</option>
+                            <option value="SP">SP</option>
+                            <option value="LV">LV</option>
+                            <option value="CPP">CPP</option>
+                            <option value="TOS">TOS</option>
+                            <option value="OPC">OPC</option>
+                            <option value="H">H</option>
+                        </select>
+                    </td>
+                    <td> <button id="" class="btn" onclick="load()">
+                            Load
+                        </button>
+                    </td>
+                    <td> <button id="" class="btn" onclick="jump()">
+                            jump
+                        </button>
+                    </td>
+                    <td><button id="" class="btn" onclick="jumpPos()">
+                            jumpPos
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        <button id="" class="btn" onclick="returnen()">
+                            Return
+                        </button>
+                    </td>
+                    <td>
+                        <button id="" class="btn" onclick="store()">
+                            Store
+                        </button>
+                    </td>
+                    <td>
+                        
+                    </td>
+                </tr>
+            </table>
+            
+            <!-- https://docplayer.org/83878054-4-mikroprogrammierung-firmware.html -->
+        </div>
+
+        <table class="div">
+            <tr>
+                <td id="showActions" class="infoSpan">
+                    
+                </td>
+                <td id="binaerCode" class="code">
+                    
+                </td>
+            </tr>
+        </table>
+        <br />
+        <div class="text" id="binaer" >
+
+        </div>
+    </body>
+
+    </html>
+    <script>
+        let showActions = document.getElementById("showActions");
+        let binaerCode = document.getElementById("binaerCode");
+        function increase(){
+            //"INSP", "11111100"
+            let code = "11111100 ";
+            let name = " /increase";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function decrease(){
+            //"DESP", "11111110"
+            let name = " /decrease";
+            let code = "11111110 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function add(){
+            //"ADDD", "0010"     (0+MDR->MAR; lesen; MPC+1->MPC)
+            let name = " /add";
+            let code = "0010 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function pop(){
+            //"POP", "1111011"
+            let name = " /pop";
+            let code = "1111011 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function push(){
+            //"PUSH", "1111010"
+            let name = " /push";
+            let code = "1111010 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function subtract(){
+            //"SUBD", "0011"     (0+MDR->MAR; lesen; MPC+1->MPC)
+            let name = " /subtract";
+            let code = "0011 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function jumpZero(){
+            //"JZER", "0101"     (MPC+TESTZERO->MPC)
+            let name = " /jumpZero";
+            let code = "0101 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function load(){
+            //"LODD", "0000"     (0+MDR->MAR; lesen; MPC+1->MPC)
+            let name = " /load";
+            let code = "0000 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function jumpPos(){
+            //"JPOS", "0100"
+            let name = " /jumpPos";
+            let code = "0100 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function jump(){
+            //"JUMP", "0110"    (0+MDR->B; 0+0->MPC)
+            let name = " /jump";
+            let code = "0110 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function returnen(){
+            //"RETN", "1111100"  (0+MDR->MAR; lesen; MPC+1->MPC)
+            let name = " /returnen";
+            let code = "1111100 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function store(){
+            //"STOD", "0001"    (0+MDR -> MAR; MPC+1->MPC)
+            let name = " /store";
+            let code = "0001 ";
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function execute(){
+            let text = document.getElementById("binaer");
+            let code = document.getElementById("binaerCode");
+            let newcode;
+            let array = code.innerHTML.split(" ");
+            array.forEach(element => {
+                if(element != "" && element != "\n"){
+                newcode += element;
+                }
+            });
+            newcode = newcode.split("undefined");
+            text.innerHTML = newcode[1];
+        }
+        function registerA(){
+            let selected = document.getElementById("regA");
+            let name = " /RegA + ";
+            let code = " ";
+            switch(selected.value){
+                case "MAR": name += "MAR ";
+                            code = "";
+                    break;
+                case "MDR": name += "MDR ";
+                            code = "";
+                    break;
+                case "PC":  name += "PC ";
+                            code = "";
+                    break;
+                case "MBR": name += "MBR ";
+                            code = "";
+                    break;
+                case "SP":  name += "SP ";
+                            code = "";
+                    break;
+                case "LV":  name += "LV ";
+                            code = "";
+                    break;
+                case "CPP": name += "CPP ";
+                            code = "";
+                    break;
+                case "TOS": name += "TOS ";
+                            code = "";
+                    break;
+                case "OPC": name += "OPC ";
+                            code = "";
+                    break;
+                case "H": name += "H ";
+                            code = "";
+                    break;
+            }
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function registerB(){
+            let selected = document.getElementById("regB");
+            let name = " /RegA + ";
+            let code = " ";
+            switch(selected.value){
+                case "MAR": name += "MAR ";
+                            code = "";
+                    break;
+                case "MDR": name += "MDR ";
+                            code = "";
+                    break;
+                case "PC":  name += "PC ";
+                            code = "";
+                    break;
+                case "MBR": name += "MBR ";
+                            code = "";
+                    break;
+                case "SP":  name += "SP ";
+                            code = "";
+                    break;
+                case "LV":  name += "LV ";
+                            code = "";
+                    break;
+                case "CPP": name += "CPP ";
+                            code = "";
+                    break;
+                case "TOS": name += "TOS ";
+                            code = "";
+                    break;
+                case "OPC": name += "OPC ";
+                            code = "";
+                    break;
+                case "H": name += "H ";
+                            code = "";
+                    break;
+            }
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+        function registerC(){
+            let selected = document.getElementById("regC");
+            let name = " /RegA + ";
+            let code = " ";
+            switch(selected.value){
+                case "MAR": name += "MAR ";
+                            code = "";
+                    break;
+                case "MDR": name += "MDR ";
+                            code = "";
+                    break;
+                case "PC":  name += "PC ";
+                            code = "";
+                    break;
+                case "MBR": name += "MBR ";
+                            code = "";
+                    break;
+                case "SP":  name += "SP ";
+                            code = "";
+                    break;
+                case "LV":  name += "LV ";
+                            code = "";
+                    break;
+                case "CPP": name += "CPP ";
+                            code = "";
+                    break;
+                case "TOS": name += "TOS ";
+                            code = "";
+                    break;
+                case "OPC": name += "OPC ";
+                            code = "";
+                    break;
+                case "H": name += "H ";
+                            code = "";
+                    break;
+            }
+            binaerCode.innerHTML += code;
+            showActions.innerHTML += name;
+        }
+
+    </script>
+    <style>
+        .body {
+            background-color: rgb(104, 86, 86);
+        }
+
+        .btn {
+            width: 100px;
+            height: 30px;
+            border-radius: 4px;
+            border-color: black;
+            background-color: rgb(0, 255, 21);
+            font-size: large;
+        }
+        .btn-Register {
+            width: 100px;
+            height: 30px;
+            border-radius: 4px;
+            border-color: black;
+            background-color: rgb(0, 238, 255);
+            font-size: large;
+        }
+
+        .table {
+            text-align: center;
+            margin-top: 5%;
+            margin-left: 40%;
+
+        }
+
+        .infoSpan {
+            max-width: 40%;
+            display: block;
+            left: 0%;
+            background-color: blueviolet;
+            position: fixed;
+        }
+
+        .code {
+            right: 0%;
+            max-width: 40%;
+            background-color: blueviolet;
+            position: fixed;
+            display: block;
+        }
+
+        .div {
+            width: 100%;
+            position: relative;
+        }
+
+        .text {
+            position: relative;
+            left: 40.5%;
+            width: 19%;
+            background-color: aqua;
+            word-wrap: break-word;
+        }
+        .execute-btn{
+            position: relative;
+            left: 48%;
+            width: 100px;
+            height: 30px;
+            font-size: large;
+            border-radius: 4px;
+            border-color: black;
+            background-color: rgb(255, 0, 0);
+        }
+    </style>

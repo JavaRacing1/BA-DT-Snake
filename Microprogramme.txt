@@ -1,0 +1,5 @@
+https://static.aminer.org/pdf/PDF/000/229/113/mikroprogrammierung.pdf //Befehlssatz Target Machine und Beispiel ADD Microbefehl
+https://www.mathematik.uni-marburg.de/~loogen/Lehre/ws07/TechInf1/Folien/TechInf1Lo07Folien.pdf Visualisierung Maschienencode zu Hexadezimaladressen und Beispielprogramm ADD von zwei Dezimalzahlen
+https://agra.informatik.uni-bremen.de/doc/lehrmat/wise0304/ra/kap3.1-2.pdf Maschienensprache binär / hexadezimal Codes + schreiben, lesen, decodieren von Maschienencodes
+http://eos.cs.ovgu.de/eos_old/lehre/SS2007/vl_rs/folien/SS2007-RS-04-mp.pdf einfacher Befehlssatz
+https://zulauf-online.name/da/node62.htm
