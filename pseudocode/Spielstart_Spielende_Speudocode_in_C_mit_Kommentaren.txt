@@ -1,0 +1,148 @@
+C-Speudotext 
+-------------
+//Vorinitialierung Startwerte aus Spielfeldgenerierung
+
+SchlangeSegmenteBeginn = 3; // Startsegmente
+AnzahlFrüchte = 0; //Anzahl Körperteile abhängig durch eingesammelte Früchte
+AnzahlKörperMax = 8; // maximale Länge == Sieg --> AnzahlFrüchte == 5 bedeutet auch Sieg
+AbstandHorizontal = 15; // von Mitte zum linken Rand --> wenn == 0 oder == 29 Niederlage
+AbstandVertikal = 11;  // von Mitte zum oberern Rand --> wenn == 0 oder == 19 Niederlage
+ZustandSpiel = 0; // für Auswertung ob Sieg bleibt ZustandSpiel gleich 0 oder ZustandSpiel wird durch einen der eintretenden Niederlagenfälle größer 0 verändert
+
+//Speicheradressen der Früchte (5 Früchte vorplatziert, aber immer nur eine aktiv)
+//aktive Frucht über AnzahlFrucht definiert (d.h. Frucht 1 wenn AnzahlFrucht = 0, Frucht 2 wenn AnzahlFrucht = 2,...)
+//aktive Frucht muss immer Icon ins Spielfeld reingeladen werden, sollte die derzeit aktive Frucht erfolgreich eingesammelt werden
+
+Frucht1 = AdresseFrucht1; 
+Lade (FruchtIcon,PosiionFrucht1); //durch Spielfeldgenerierung schon vorgegeben im Spielzug 0
+Frucht2 = AdresseFrucht2;
+Frucht3 = AdresseFrucht3;
+Frucht4 = AdresseFrucht4;
+Frucht5 = AdresseFrucht5;
+
+//Speicheradresse der Schlangenkörpersegmente
+//Kopfsegmentadresse wird bei jeder erfolgreichen Bewegung an jeweils dahinter folgendendes Segment übergeben
+//Bei Spielstart (noch keine Bewegung) nur Kopfsegment geladen mit Icon
+
+SchlangeKopf = AdresseKopf;
+Lade (SchlangeKopfIcon,PositionSchlangeKopf); //durch Spielfeldgenerierung schon vorgegeben im Spielzug 0
+SchlangenKörper1 = AdresseKörper1; // müsste durch "Bewegungsfunktion ständig erneuert werden und an die 8 Variablen für Vergleich übergeben
+SchlangenKörper2 = AdresseKörper2; // bzw. wenn es möglich ist im COMPARE Microbefehl für die zwei Adressen (Kopf und jeweiliges Körpersegment) einen seperaten LOAD Befehl 
+SchlangenKörper3 = AdresseKörper3; // mit reinzubauen, dann kann man sich diese 7 - 8 Variablen / extra Adressen sparen
+SchlangenKörper4 = AdresseKörper4;
+SchlangenKörper5 = AdresseKörper5;
+SchlangenKörper6 = AdresseKörper6;
+SchlangenKörper7 = AdresseKörper7;
+
+//Spielbewegung der Schlange für Randpositionsvergeleich
+//um Variablen (Adressen) AbstandHorizontal und AbstandVertikal jeweils zu incrementieren oder decrementieren zu können
+//könnte vielleicht als einfache Integerzahl angegeben werden (links = 0, oben = 1, rechts = 2, unten = 3)
+AktuelleSpielrichtung = AdresseSpielrichtung //Speicherort der Spielrichtung von "Bewegungs - Funktion"
+
+//Sieg und Niederlagen Abfragen, die am Ende jedes Spielzuges abgefragt werden
+//Schleifenkonstruktion kann auch mit den Befehlen für die "Bewegung" und für das "Wachstum" erweitert werden
+
+while (AnzahlKörperMax > (SchlangeSegmenteBeginn + AnzahlFrüchte)) //Siegbedingung --> sollte dies erreicht werden nach while Schleife noch was für Sieg mit Spielfeld machen (Sieg mit den Randpixeln schreiben oder einen Smiley generieren)
+{
+	//Abfrage Niederlage durch Berühren des Randes
+	if (AbstandHorizontal == 0) || (AbstandHorizontal == 29) //Randpositionen bei 0 (links) und 29 (rechts) 
+	{
+		ZustandSpiel = ZustandSpiel + 1;
+		break;
+	}
+	if (AbstandVertikal == 0) || (AbstandVertikal == 19) //Randpositionen bei 0 (oben) und 19 (unten)
+	{
+		ZustandSpiel = ZustandSpiel + 1;
+		break;
+	}
+	//Abstände an aktuelle Bewegung anpassen
+	if (AktuelleSpielrichtung == 0)
+		AbstandHorizontal = AbstandHorizontal - 1;
+	if (AktuelleSpielrichtung == 1)
+		AbstandVertikal = AbstandVertikal - 1;
+	if (AktuelleSpielrichtung == 2)
+		AbstandHorizontal = AbstandHorizontal + 1;
+	if (AktuelleSpielrichtung == 3)
+		AbstandVertikal = AbstandVertikal + 1;
+	//Abfrage Niederlage durch Fressen von eigenen Körper
+	//Sollte Schlange mehr als 4 Segemente haben (Kopf mitgezählt) und 3 mal hintereinander in die selbe Richtung abbiegen, dann frisst sie sich selbst --> Niederlage
+	//Wenn man aber die Adressen von Kopf und den jeweilig aktiven Segmenten am Ende jedes Spielzugs mit einen COMPARE oder AND Befehl vergleichen will
+	//erfordert das eine Menge Rechenzeit und extra Adressen im Speicher
+	if (SchlangenKopf == Schlangenkörper1)
+	{
+	ZustandSpiel = ZustandSpiel + 1;
+	break;
+	}
+	if (SchlangenKopf == Schlangenkörper2)
+	{
+	ZustandSpiel = ZustandSpiel + 1;
+	break;
+	}
+	if (SchlangenKopf == Schlangenkörper3)
+	{
+	ZustandSpiel = ZustandSpiel + 1;
+	break;
+	}
+	if (SchlangenKopf == Schlangenkörper4)
+	{
+	ZustandSpiel = ZustandSpiel + 1;
+	break;
+	}
+	if (SchlangenKopf == Schlangenkörper5)
+	{
+	ZustandSpiel = ZustandSpiel + 1;
+	break;
+	}
+	if (SchlangenKopf == Schlangenkörper6)
+	{
+	ZustandSpiel = ZustandSpiel + 1;
+	break;
+	}
+	if (SchlangenKopf == Schlangenkörper7)
+	{
+	ZustandSpiel = ZustandSpiel + 1;
+	break;
+	}
+	//Abfrage für Siegbedingung (Abschluss while Schleife) ob aktive Frucht eingesammelt wurde
+	//aktive Frucht durch AnzahlFrucht bestimmt
+	//nachdem eine Frucht eingesammelt wurde, AnzhalFrucht um eins erhöhen und Icon für nächste Frucht an jeweilger Position generieren
+	if (Schlangenkopf == Frucht1)
+	{
+	AnzahlFrucht = AnzahlFrucht + 1;
+	Lade (FruchtIcon,PositionFrucht2);
+	}
+	if (Schlangenkopf == Frucht2)
+	{
+	AnzahlFrucht = AnzahlFrucht + 1;
+	Lade (FruchtIcon,PositionFrucht3);
+	}
+	if (Schlangenkopf == Frucht3)
+	{
+	AnzahlFrucht = AnzahlFrucht + 1;
+	Lade (FruchtIcon,PositionFrucht4);
+	}
+	if (Schlangenkopf == Frucht4)
+	{
+	AnzahlFrucht = AnzahlFrucht + 1;
+	Lade (FruchtIcon,PositionFrucht5);
+	}
+	if (Schlangenkopf == Frucht5)
+	{
+	AnzahlFrucht = AnzahlFrucht + 1;
+	}
+}
+
+//noch im Main Programmcode, aber im End Teil der While (loop) Schleife
+//Abfrage nach Zustand des Spiels - Sieg oder Niederlage erziehlt?
+if (ZustandSpiel == 0)
+{Sieg erziehlt, da alle Früchte eingesammelt und AnzhalKörperMax = 8 erreicht} //irgendwie den Spieler visuell symbolisieren
+else
+{Niederlage, da entweder Rand berührt oder Körpersegment gefressen} //irgendwie den Spieler visuell symbolisieren
+	
+
+
+
+
+
+
+

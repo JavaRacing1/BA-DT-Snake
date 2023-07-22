@@ -1,0 +1,106 @@
+// Registerbelegung für die genutzten Variablen (Adressen der variablen)
+
+SchlangeSegmenteBeginn --> SSB
+AnzahlFrüchte  --> ANZF
+AnzahlKörperMax --> ANZKM
+AbstandHorizontal --> ABH
+AbstandVertikal --> ABV
+ZustandSpiel --> ZSS
+Frucht1 --> F1
+Frucht2 --> F2
+Frucht3 --> F3
+Frucht4 --> F4
+Frucht5 --> F5
+SchlangenKopf --> SK
+SchlangenKörper1 --> SK1
+SchlangenKörper2 --> SK2
+SchlangenKörper3 --> SK3
+SchlangenKörper4 --> SK4
+SchlangenKörper5 --> SK5
+SchlangenKörper6 --> SK6
+SchlangenKörper7 --> SK7
+AktuelleSpielrichtung --> ASR
+
+// Programmcode  (MOVE Befehl = Zuweisung eines Wertes an eine Adresse
+// MOV SSB,3 := SSB wird die zahl 3 zugewiesen 
+// MOV F1,[] := F1 wird eine Adresse zugewiesen, die in dieser Zeile steht
+
+MOV SSB,3
+MOV ANZF,0
+MOV ANZMK,8
+MOV ABH,15
+MOV ABV,11
+MOV ZSS,0
+MOV F1,[Registeradresse F1]
+MOV F2,[Registeradresse F2]
+MOV F3,[Registeradresse F3]
+MOV F4,[Registeradresse F4]
+MOV F5,[Registeradresse F5]
+MOV SK,[Registeradresse SK]
+MOV SK1,[Registeradresse SK1]
+MOV SK2,[Registeradresse SK2]
+MOV SK3,[Registeradresse SK3]
+MOV SK4,[Registeradresse SK4]
+MOV SK5,[Registeradresse SK5]
+MOV SK6,[Registeradresse SK6]
+MOV SK7,[Registeradresse SK7]
+MOV ASR,[Registeradresse ASR oder direkt aus Codezeile wo die Info erzeugt wird]
+
+//ADD A,B ist ADDITION Befehl zum addieren von zwei Werten, welche in Register A und B stehen
+//CMP A,B ist COMPARE Befehl, der Inhalte der beiden Register A und B miteinander vergleicht
+//sollte Gleichheit (oder boelsch TURE rauskommen) wird Anweisung direkt eine Zeile drunter ausgeführt, sonst übersprungen
+//JE ist JUMP Befehl der ans Ende (zun END) springt
+//JMP loop (als "goto loop" bei Phillips Befehlssatz) ist ebenso ein JUMP Befehl, der aber zu angegebener Zeile (zu loop) springt (Schleifenkonstruktrion)
+//DEC A ist DECREMENT Befehl, der den Wert im Register A im 1 verringert
+//INC A ist INCREMENT Befehl, der den Wert in Register A um 1 erhöht
+//STOP ist STOP Befehl der den Code abschließt
+
+loop:	CMP ANZMK, ADD SSB,ANZF
+	goto end
+	CMP ABH,0
+	INC ZSS, goto end
+	CMP ABH,29
+	INC ZSS, goto end
+	CMP ABV,0
+	INC ZSS, goto end
+	CMP ABV,19
+	INC ZSS, goto end
+	CMP ASR,0
+	DEC ABH
+	CMP ASR,1
+	DEC ABV
+	CMP ASR,2
+	INC ABH
+	CMP ASR,3
+	INC ABV
+	CMP SK,SK1
+	INC ZSS, goto end
+	CMP SK,SK2
+	INC ZSS, goto end
+	CMP SK,SK3
+	INC ZSS, goto end
+	CMP SK,SK4
+	INC ZSS, goto end
+	CMP SK,SK5
+	INC ZSS, goto end
+	CMP SK,SK6
+	INC ZSS, goto end
+	CMP SK,SK7
+	INC ZSS, goto end
+	CMP SK,F1
+	INC ANZF (und vielleicht noch das Laden der neuen aktiven Frucht hier mit ran)
+	CMP SK,F2
+	INC ANZF
+	CMP SK,F3
+	INC ANZF
+	CMP SK,F4
+	INC ANZF
+	CMP SK,F5
+	INC ANZF
+end: 	CMP SSZ,0
+	Sieg erziehlt (Anweisungen für Visoalisierung)
+	Niederlage erziehlt (Anweisungen für Visoaliserung)
+
+	
+	
+
