@@ -4,13 +4,19 @@ from tkinter import *
 from tkinter import filedialog
 from threading import Thread
 from threading import Timer
+import serial
 print("starting oktopus machine!")
 class mainstorage:
     def __init__(self,viso,size):
         self.__mainstorage = []
         self.__size = size
         self.__buffer = []
+        self.__char = ""
         self.console = None
+        self.__last_read_byte = 0
+        self.__last_write_byte = 0
+        self.__last_read_word = 0
+        self.__last_write_word = 0
         mf = Toplevel()
         vscrollbar = Scrollbar(mf, orient=VERTICAL)
         self.__fr = Canvas(mf,width=210,height=600,scrollregion=(0,0,0,20*(int(self.__size/4))),yscrollcommand=vscrollbar.set)
@@ -26,41 +32,54 @@ class mainstorage:
             t = self.__fr.create_text(57+col*42,(wa*20+10),fill='black',text='0')
             self.__mainstorage.append({'val':0,'rect':r,'text':t})
 
+            
     def start_console(self):
         self.console = screen(self)
-        #init(self, t)
- #       for i in range(0,30):
- #           self.save_word(4096+(i*8), 255<<8)
-  #          self.save_word(4097+(19*240)+(i*8), 255<<16)            
- #       #Rand links und rechts
- #       for i in range(0, 20):
- #           self.save_word(4096+(i*240), (64<<24) + (64<<16) + (64<<8) + 64)
- #           self.save_word(4097+(i*240), (64<<24) + (64<<16) + (64<<8) + 64)
- #           self.save_word(4328+(i*240), (2<<24) + (2<<16) + (2<<8) + 2)
- #           self.save_word(4329+(i*240), (2<<24) + (2<<16) + (2<<8) + 2)
- 
+
+    def set_char(self,c):
+        self.__char = c
+
+    def reset_history_read_byte(self):
+        self.__fr.itemconfig(self.__mainstorage[self.__last_read_byte]['rect'],fill="yellow")
+
+    def reset_history_read_word(self):
+        self.__fr.itemconfig(self.__mainstorage[self.__last_read_word]['rect'],fill="yellow")
+        self.__fr.itemconfig(self.__mainstorage[self.__last_read_word+1]['rect'],fill="yellow")
+        self.__fr.itemconfig(self.__mainstorage[self.__last_read_word+2]['rect'],fill="yellow")
+        self.__fr.itemconfig(self.__mainstorage[self.__last_read_word+3]['rect'],fill="yellow")
+
+    def reset_history_write_byte(self):
+        self.__fr.itemconfig(self.__mainstorage[self.__last_write_byte]['rect'],fill="yellow")
+
+    def reset_history_write_word(self):
+        self.__fr.itemconfig(self.__mainstorage[self.__last_write_word]['rect'],fill="yellow")
+        self.__fr.itemconfig(self.__mainstorage[self.__last_write_word+1]['rect'],fill="yellow")
+        self.__fr.itemconfig(self.__mainstorage[self.__last_write_word+2]['rect'],fill="yellow")
+        self.__fr.itemconfig(self.__mainstorage[self.__last_write_word+3]['rect'],fill="yellow")
+
     def save_word(self,addr,value):
         v1 = value & 255
         v2 = value>>8 & 255
         v3 = value>>16 & 255
         v4 = value>>24
         # draw to console
-        if addr >= self.__size:
+        print("draw memory address: " + str(addr))
+        if addr >= self.__size/4:
+            print("Draw in to console!!!! " + str(addr))
+            #addr = addr<<2
             if self.console != None:
-                a = addr - self.__size
-                pos = int(a/8)
+                a = addr - self.__size/4
+                pos = int(a/2)
                 if a % 2:
                     td = 1
                 else:
                     td = 0
-            
                 y = pos % 30
                 x = int(pos/30)
                 print("pos: " + str(pos) + " x: " + str(x) + " y: " + str(y) + " "  + str(value) + " " + str(v1) + " " + str(v2) + " " + str(v3) + " " + str(v4))
                 self.console.draw(x,y,td,[v4,v3,v2,v1])
             print("bad address")
         else:
-           
             self.__fr.itemconfig(self.__mainstorage[addr*4]['text'],text=hex(v1))
             self.__fr.itemconfig(self.__mainstorage[addr*4+1]['text'],text=hex(v2))
             self.__fr.itemconfig(self.__mainstorage[addr*4+2]['text'],text=hex(v3))
@@ -70,6 +89,12 @@ class mainstorage:
             self.__mainstorage[addr*4+1]['val'] = v2
             self.__mainstorage[addr*4+2]['val'] = v3
             self.__mainstorage[addr*4+3]['val'] = v4
+            self.reset_history_write_word()
+            self.__fr.itemconfig(self.__mainstorage[addr*4]['rect'],fill="lightblue")
+            self.__fr.itemconfig(self.__mainstorage[addr*4+1]['rect'],fill="lightblue")
+            self.__fr.itemconfig(self.__mainstorage[addr*4+2]['rect'],fill="lightblue")
+            self.__fr.itemconfig(self.__mainstorage[addr*4+3]['rect'],fill="lightblue")
+            self.__last_write_byte = addr*4
         print("save " + str(value) + " on " + str(addr))
 
     def save_byte(self,addr,value):
@@ -87,7 +112,9 @@ class mainstorage:
        else:
            self.__mainstorage[addr]['val'] = value
            self.__fr.itemconfig(self.__mainstorage[addr]['text'],text=  hex(value)[0:4])
-           
+           self.reset_history_write_byte()
+           self.__fr.itemconfig(self.__mainstorage[addr]['rect'],fill="lightblue")
+           self.__last_write_byte = addr
     def read_word(self,addr):
         if addr >= self.__size:
             print("bad address")
@@ -98,10 +125,19 @@ class mainstorage:
             v3 = self.__mainstorage[addr*4+2]['val']
             v4 = self.__mainstorage[addr*4+3]['val']
             ret = v1 + (v2<<8) + (v3<<16) + (v4<<24)
+            self.reset_history_read_word()
+            self.__fr.itemconfig(self.__mainstorage[addr*4]['rect'],fill="white")
+            self.__fr.itemconfig(self.__mainstorage[addr*4+1]['rect'],fill="white")
+            self.__fr.itemconfig(self.__mainstorage[addr*4+2]['rect'],fill="white")
+            self.__fr.itemconfig(self.__mainstorage[addr*4+3]['rect'],fill="white")
+            self.__last_read_word = addr*4
             return ret
         
     def read_byte(self,addr):
         b = self.__mainstorage[addr]['val']
+        self.reset_history_read_byte()
+        self.__fr.itemconfig(self.__mainstorage[addr]['rect'],fill="white")
+        self.__last_read_byte = addr
         return b
         
 
@@ -117,11 +153,20 @@ class register:
     def write(self,value):
         self._value = value
         self._canvas.itemconfig(self._value_string,text=str(hex(value)))
+    def reset(self):
+        self._value = 0
+        self._canvas.itemconfig(self._value_string,text=str(hex(0)))
+
+        
     def read(self):
         return self._value
+
+    def read_unsignt():
+        return self._value
+    
     def sll8(self):
         self._value = self._value<<8
-        self._value = self.value & (2**32-1)
+        #self._value = self.value & (2**32-1)
     def sra1(self):
         self._value = self._value>1
         
@@ -169,15 +214,15 @@ class microeditor:
         Label(microeditor, text="B-Bus").grid(row=0,column=0)
         self.BBus = IntVar()
          
-        Radiobutton(microeditor,  text="MDR",variable=self.BBus,value=1).grid(sticky="W",row=1,column=0)
-        Radiobutton(microeditor,  text="PC",variable=self.BBus,value=2).grid(sticky="W",row=2,column=0)
-        Radiobutton(microeditor,  text="MBR",variable=self.BBus,value=3).grid(sticky="W",row=3,column=0)
-        Radiobutton(microeditor,  text="MBRU",variable=self.BBus,value=4).grid(sticky="W",row=4,column=0)
-        Radiobutton(microeditor,  text="SP",variable=self.BBus,value=5).grid(sticky="W",row=5,column=0)
-        Radiobutton(microeditor,  text="LV",variable=self.BBus,value=6).grid(sticky="W",row=6,column=0)
-        Radiobutton(microeditor,  text="CPP",variable=self.BBus,value=7).grid(sticky="W",row=7,column=0)
-        Radiobutton(microeditor,  text="TOS", variable=self.BBus,value=8).grid(sticky="W",row=8,column=0)
-        Radiobutton(microeditor,  text="OPC",variable=self.BBus,value=9).grid(sticky="W",row=9,column=0)
+        Radiobutton(microeditor,  text="MDR",variable=self.BBus,value=0).grid(sticky="W",row=1,column=0)
+        Radiobutton(microeditor,  text="PC",variable=self.BBus,value=1).grid(sticky="W",row=2,column=0)
+        Radiobutton(microeditor,  text="MBR",variable=self.BBus,value=2).grid(sticky="W",row=3,column=0)
+        Radiobutton(microeditor,  text="MBRU",variable=self.BBus,value=3).grid(sticky="W",row=4,column=0)
+        Radiobutton(microeditor,  text="SP",variable=self.BBus,value=4).grid(sticky="W",row=5,column=0)
+        Radiobutton(microeditor,  text="LV",variable=self.BBus,value=5).grid(sticky="W",row=6,column=0)
+        Radiobutton(microeditor,  text="CPP",variable=self.BBus,value=6).grid(sticky="W",row=7,column=0)
+        Radiobutton(microeditor,  text="TOS", variable=self.BBus,value=7).grid(sticky="W",row=8,column=0)
+        Radiobutton(microeditor,  text="OPC",variable=self.BBus,value=8).grid(sticky="W",row=9,column=0)
         
 
         #B-Bus
@@ -252,26 +297,26 @@ class microeditor:
         Button(microeditor,text="Insert Command",command=self.new_microcommand).grid(sticky="W",row=9,column=5)
         self.color = StringVar()
         self.color.set("#fffffffff")
-        Radiobutton(microeditor,bg="#fffffffff",variable=self.color,value="#fffffffff").grid(sticky="W",row=1,column=6)
-        Radiobutton(microeditor,bg="#fff000fff",variable=self.color,value="#fff000fff").grid(sticky="W",row=2,column=6)
-        Radiobutton(microeditor,bg="#fff000000",variable=self.color,value="#fff000000").grid(sticky="W",row=3,column=6)
-        Radiobutton(microeditor,bg="#fff000555",variable=self.color,value="#fff000555").grid(sticky="W",row=4,column=6)
-        Radiobutton(microeditor,bg="#fff111777",variable=self.color,value="#fff111777").grid(sticky="W",row=5,column=6)
-        Radiobutton(microeditor,bg="#fff333000",variable=self.color,value="#fff333000").grid(sticky="W",row=6,column=6)
-        Radiobutton(microeditor,bg="#000000fff",variable=self.color,value="#000000fff").grid(sticky="W",row=1,column=7)
-        Radiobutton(microeditor,bg="#0ff0ff0ff",variable=self.color,value="#0ff0ff0ff").grid(sticky="W",row=2,column=7)
-        Radiobutton(microeditor,bg="#000fff000",variable=self.color,value="#000fff000").grid(sticky="W",row=3,column=7)
-        Radiobutton(microeditor,bg="#fff999000",variable=self.color,value="#fff999000").grid(sticky="W",row=4,column=7)
-        Radiobutton(microeditor,bg="#fff000999",variable=self.color,value="#fff000999").grid(sticky="W",row=5,column=7) 
-        Radiobutton(microeditor,bg="#fff555555",variable=self.color,value="#fff555555").grid(sticky="W",row=6,column=7)
-        Radiobutton(microeditor,bg="#000000fff",variable=self.color,value="#000000fff").grid(sticky="W",row=1,column=8)
-        Radiobutton(microeditor,bg="#aaabbbccc",variable=self.color,value="#aaabbbccc").grid(sticky="W",row=2,column=8)
-        Radiobutton(microeditor,bg="#999999222",variable=self.color,value="#999999222").grid(sticky="W",row=3,column=8)
-        Radiobutton(microeditor,bg="#123456789",variable=self.color,value="#123456789").grid(sticky="W",row=4,column=8)
-        Radiobutton(microeditor,bg="#000AAA333",variable=self.color,value="#000AAA333").grid(sticky="W",row=5,column=8)
-        Radiobutton(microeditor,bg="#000555999",variable=self.color,value="#000555999").grid(sticky="W",row=6,column=8)
+        Radiobutton(microeditor,bg="#8a2be2",variable=self.color,value="#8a2be2").grid(sticky="W",row=1,column=6)
+        Radiobutton(microeditor,bg="#5f9ea0",variable=self.color,value="#5f9ea0").grid(sticky="W",row=2,column=6)
+        Radiobutton(microeditor,bg="#00008b",variable=self.color,value="#00008b").grid(sticky="W",row=3,column=6)
+        Radiobutton(microeditor,bg="#1874CD",variable=self.color,value="#1874CD").grid(sticky="W",row=4,column=6)
+        Radiobutton(microeditor,bg="#BC8F8F",variable=self.color,value="#BC8F8F").grid(sticky="W",row=5,column=6)
+        Radiobutton(microeditor,bg="#8B4513",variable=self.color,value="#8B4513").grid(sticky="W",row=6,column=6)
+        Radiobutton(microeditor,bg="#A52A2A",variable=self.color,value="#A52A2A").grid(sticky="W",row=1,column=7)
+        Radiobutton(microeditor,bg="#CD3333",variable=self.color,value="#CD3333").grid(sticky="W",row=2,column=7)
+        Radiobutton(microeditor,bg="#8B7355",variable=self.color,value="#8B7355").grid(sticky="W",row=3,column=7)
+        Radiobutton(microeditor,bg="#D2691E",variable=self.color,value="#D2691E").grid(sticky="W",row=4,column=7)
+        Radiobutton(microeditor,bg="#006400",variable=self.color,value="#006400").grid(sticky="W",row=5,column=7) 
+        Radiobutton(microeditor,bg="DarkKhaki",variable=self.color,value="DarkKhaki").grid(sticky="W",row=6,column=7)
+        Radiobutton(microeditor,bg="#a2cd5a",variable=self.color,value="#a2cd5a").grid(sticky="W",row=1,column=8)
+        Radiobutton(microeditor,bg="#00fa9a",variable=self.color,value="#00fa9a").grid(sticky="W",row=2,column=8)
+        Radiobutton(microeditor,bg="#9ACD32",variable=self.color,value="#9ACD32").grid(sticky="W",row=3,column=8)
+        Radiobutton(microeditor,bg="#EEE685",variable=self.color,value="#EEE685").grid(sticky="W",row=4,column=8)
+        Radiobutton(microeditor,bg="#f08080",variable=self.color,value="#f08080").grid(sticky="W",row=5,column=8)
+        Radiobutton(microeditor,bg="#ee1289",variable=self.color,value="#ee1289").grid(sticky="W",row=6,column=8)
 
-    def load(self,mc,address):
+    def load(self,mc,address,color):
         print("in methode load " + str(mc))
         struct = self.__om.cu.decode(mc)
         self.next_address.set(struct["next_address"])
@@ -280,7 +325,7 @@ class microeditor:
         self.jamn.set(struct["jamn"])
         self.jamz.set(struct["jamz"])
         self.shift.set(2 * struct["sll8"] + struct["sra1"])
-        self.function.set(struct["f0"] + 2*struct["f1"])
+        self.function.set(struct["f1"] + 2*struct["f0"])
         self.ena.set(struct["ena"])
         self.enb.set(struct["enb"])
         self.inva.set(struct["inva"])
@@ -296,6 +341,7 @@ class microeditor:
         self.C_MAR.set(struct["mar"])
         self.read_write.set(int(struct["write"])*2 + int(struct["read"]))
         self.fetch.set(struct["fetch"])
+        self.color.set(color)
         print("BBUS: " + str(struct["bbus"]))
         self.BBus.set(struct["bbus"])
         
@@ -356,15 +402,35 @@ class microeditor:
             
   
 class om:
-    def __init__(self,viso,ms):
+    def __init__(self,viso,ms,bbc):
+        ##############################################
+        #
+        #  Fake Snakerace
+        #
+        ##############################################
+        self.__fake_segmente = [1300,1301,1302,1303,1304,1305,1306,1307]
+        self.__fake_head = 0
+        self.__fake_direction = [-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,60,60,60,60,-2,-2,-2,60,60,60,60,60,60,2,2,2,-60,-60,-60,-60,-60,2,2,2,2,2,2,2,2,-60,2,2,-60,-60,-60,-60]
+        self.__fake_pos_dir = 0
+
+        ###############################################
+
         self.mainstorage = ms
-        self.__assembler = assembler('cisc')
+        self.__bbc = bbc
+        try:
+            self.__serial = serial.Serial('COM15',115200,)
+        except:
+            print("Serial port not active!")
+        #self.__serial.write(bytes("MAR#1\n",'ascii'))
         self.__mem_wr = 0
         self.__mem_rd = 0
         self.__mem_fetch = 0
+        self.__mem_addr = 0
+        self.__mem_pc = 0
         self.__fr = Canvas(viso,width=1000,height=800)
         self.__fr.pack(side="top",fill="x")
         self.__running = False
+        self.__bbc = bbc
         self.__frequency = IntVar()
         self.__register = {}
         self.draw_datapath()
@@ -386,14 +452,17 @@ class om:
         self.start.pack(side="left")
         self.frequency = Scale(self.controller,length=800,from_=0,to=1000,orient=HORIZONTAL,variable=self.__frequency)
         self.frequency.pack(side="left",fill=X)
-
+    def reset_reg(self):
+        for i in self.__register:
+            self.__register[i].reset()
+        
     def start_stop(self):
         print("freq: " + str(self.__frequency.get()))
         if self.__frequency.get() == 0:
             self.step()
         else:    
             if self.__running:
-                self.start.config(text="Sart")
+                self.start.config(text="Start")
                 self.__running = False
                 
                 print("stop thread")
@@ -411,71 +480,238 @@ class om:
             self.step()
             
     def step(self):
-        print("step")
-        #Microbefehl auswerten
-        ma = self.mpc.get_value() 
-        print("Adresse des naechsten Microbefehles: " + str(ma))
-        # lade den nächsten Microbefehl in MIR
-        mc = self.mpm.read(ma)
-        print("Command: " + str(mc))
-        self.mir.set_value(mc)
-        # Microbefehl decodieren
-        lanes = self.cu.decode(mc)
-        print("decodiert: " + str(lanes))
-        # Register auf Bus B legen
-        regs = ["mar","mdr","pc","mbr","sp","lv","cpp","tos","opc","h"]
-        #regs = ["h","opc","tos","cpp","lv","sp","mbr","pc","mdr","mar"]
-        #self.__register[regs[lanes['bbus']]].write(856374)
-        val = self.__register[regs[lanes['bbus']]].read()
-        print("value in Register " + str(lanes['bbus']) + " mit Namen " + regs[lanes['bbus']] + ": " + str(val) )
-        self.B.write(val)
-        self.A.write(self.__register["h"].read())   
-        # Alu arbeiten lassen und Ergebnis ins Schieberegister
-        self.CPU.compute(self.A,self.B,lanes,self.__register["shift"])
-        # verschiebung durchfuehren
-        if lanes["sll8"]:
-            self.__register["shift"].sll8()
-        if lanes["sra1"]:
-            self.__register["shift"].sra1()
-        # Ergebnis auf Bis C legen
-        erg = self.__register["shift"].read()
-        print("Ergebnis: " + str(erg))
-        # Wert von Bus C in Register Ueuebernehmen
-        self.C.write(erg)
-        for i in self.__register:
-            if i != "shift" and i != "mbr" and lanes[i]:
-                print("trage ergebnis " + str(erg) + " in Register " + i)
-                self.__register[i].write(erg)
-        # Speichersignale senden
-        addr = self.__register["mar"].read()
-        print("Schreibe in Speicher auf Addresse: " + str(addr))
-        if self.__mem_wr:
-            val = self.__register["mdr"].read()
-            self.mainstorage.save_word(addr,val)
-        if self.__mem_rd:
-            val = self.mainstorage.read_word(addr)
-            self.__register["mar"].write(val)
-        if self.__mem_fetch:
-            addr = self.__register["pc"].read()
-            val = self.mainstorage.read_byte(addr)
-            self.__register["mbr"].write(val)
-        # Signale auswerten fuer naechsten Takt    
-        self.__mem_wr = lanes["write"]
-        self.__mem_rd = lanes["read"]
-        self.__mem_fetch = lanes["fetch"] 
-        # naechste Addresse im Microprogramm berechnen
-        addr = lanes["next_address"]
-        jpc  = lanes["jmpc"]
-        print("Addr: " + str(addr) + " jpc: " + str(jpc) + " jmnz: " + str(lanes["jamn"]) + " jamz: " + str(lanes["jamz"]))
-        if jpc:
-            addr = addr | self.__register["mbr"].read()
-        if lanes['jamz'] and self.CPU.get_state_z:
-            addr = addr ^ (2**8)
-        if lanes['jamn'] and self.CPU.get_state_n:
-            addr = addr ^ (2**8)
-        print("Adresse: " + str(addr))    
-        self.mpc.set_value(addr)
-        
+        if self.__frequency.get() < 3:
+            ##############################################
+            #
+            #  Fake Snakerace
+            #
+            ##############################################
+            
+            #head = self.__fake_segmente[self.__fake_head]
+            #new_head = self.__fake_segmete[(self.__fake_head + 1) % 4]
+            #schwanz = self.__fake_segmente[(self.__fake_head - 1) % 4]
+            
+            
+             
+            #self.mainstorage.save_word(head+1,0x8181423c)
+            #self.mainstorage.save_word(head,0x3c428181)
+            #self.mainstorage.save_word(schwanz + 1,0x00000000)
+            #self.mainstorage.save_word(schwanz,0x00000000)    
+            #schwanz = head + self.__fake_direction[self.__fake_pos_dir]
+            #self.mainstorage.save_word(schwanz,0x3c4281a5)
+            #self.mainstorage.save_word(schwanz+1,0xa581423c)
+            #self.__fake_head = (self.__fake_head - 1) % 4
+            #self.__fake_segmente[self.__fake_head] = schwanz
+            #self.__fake_pos_dir = (self.__fake_pos_dir + 1) % len(self.__fake_direction)
+
+            #self.mainstorage.save_word(1305,0x3c4281a5)
+            ##############################################
+            #Microbefehl auswerten
+            ma = self.mpc.get_value() 
+            print("Adresse des naechsten Microbefehles: " + str(ma))
+            # lade den naechsten Microbefehl in MIR
+            mc = self.mpm.read(ma)
+            print("Command: " + str(mc))
+            self.mir.set_value(mc)
+            # Microbefehl decodieren
+            lanes = self.cu.decode(mc)
+            print("decodiert: " + str(lanes))
+            # Register auf Bus B legen
+            regs = ["mdr","pc","mbr","mbru","sp","lv","cpp","tos","opc"]
+            print("bbus: " + str(regs[lanes['bbus']]))
+            val = self.__register[regs[lanes['bbus']]].read()
+            print("value in Register " + str(lanes['bbus']) + " mit Namen " + regs[lanes['bbus']] + ": " + str(val) )
+            self.B.write(val)
+            self.A.write(self.__register["h"].read())   
+            # Alu arbeiten lassen und Ergebnis ins Schieberegister
+            self.CPU.compute(self.A,self.B,lanes,self.__register["shift"])
+            # send to serial port
+            if self.__bbc.get():
+                if lanes["enb"]:
+                    B = str(regs[lanes['bbus']])
+                else:
+                    B ="0"
+                if lanes["ena"]:
+                    H = "H"
+                else:
+                    H = "0"
+                if lanes["f0"] == 0 and lanes["f1"] == 0:
+                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#&\r\n",'ascii'))
+                elif lanes["f1"] == 0 and lanes["f0"] == 1:
+                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#|\r\n",'ascii'))
+                elif lanes["f1"] == 1 and lanes["f0"] == 0:
+                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#-\r\n",'ascii'))
+                else:
+                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#+\r\n",'ascii'))
+                # verschiebung durchfuehren
+            if lanes["sll8"]:
+                self.__register["shift"].sll8()
+            if lanes["sra1"]:
+                self.__register["shift"].sra1()
+            # Ergebnis auf Bis C legen
+            erg = self.__register["shift"].read()
+            print("Ergebnis: " + str(erg))
+            # Wert von Bus C in Register Ueuebernehmen
+            self.C.write(erg)
+            for i in self.__register:
+                if i != "shift" and i != "mbr" and i != "mbru" and lanes[i]:
+                    #print("trage ergebnis " + str(erg) + " in Register " + i)
+                    self.__register[i].write(erg)
+                    if self.__bbc.get():
+                        self.__serial.write(bytes(i.upper()+"#"+str(erg)+"\r\n",'ascii'))
+            # Speichersignale senden
+            addr = self.__register["mar"].read()
+            pc = self.__register["pc"].read()
+            print("Schreibe in Speicher auf Addresse: " + str(addr))
+            if self.__mem_wr:
+                val = self.__register["mdr"].read()
+                self.mainstorage.save_word(self.__mem_addr,val)
+            if self.__mem_rd:
+                val = self.mainstorage.read_word(self.__mem_addr)
+                self.__register["mdr"].write(val)
+                if self.__bbc.get():
+                        self.__serial.write(bytes("MDR#"+str(val)+"\r\n",'ascii'))
+            if self.__mem_fetch:
+                val = self.mainstorage.read_byte(self.__mem_pc)
+                self.__register["mbr"].write(val)
+                if self.__bbc.get():
+                        self.__serial.write(bytes("MBR#"+str(val)+"\r\n",'ascii'))
+            # Signale auswerten fuer naechsten Takt    
+            self.__mem_wr = lanes["write"]
+            self.__mem_rd = lanes["read"]
+            self.__mem_fetch = lanes["fetch"]
+            self.__mem_pc   = pc
+            self.__mem_addr = addr
+            # naechste Addresse im Microprogramm berechnen
+            naddr = lanes["next_address"]
+            jpc  = lanes["jmpc"]
+            print("Addr: " + str(naddr) + " jpc: " + str(jpc) + " jmnz: " + str(lanes["jamn"]) + " jamz: " + str(lanes["jamz"]))
+            if jpc:
+                naddr = naddr | self.__register["mbr"].read()
+            if lanes['jamz'] and self.CPU.get_state_z:
+                naddr = naddr ^ (2**8)
+            if lanes['jamn'] and self.CPU.get_state_n:
+                naddr = naddr ^ (2**8)
+            print("Adresse: " + str(naddr))    
+            self.mpc.set_value(naddr)
+        else:
+            
+            #Microbefehl auswerten
+            ma = self.mpc.get_value() 
+            # lade den naechsten Microbefehl in MIR
+            mc = self.mpm.read(ma)
+            self.mir.set_value(mc)
+            # Microbefehl decodieren
+            lanes = self.cu.decode(mc)
+            # Register auf Bus B legen
+            regs = ["mdr","pc","mbr","mbru","sp","lv","cpp","tos","opc"]   
+            # Alu arbeiten lassen und Ergebnis ins Schieberegister
+            #self.CPU.compute(self.A,self.B,lanes,self.__register["shift"])
+            # Alu inline
+            if lanes["ena"]:
+                A = self.__register[regs[lanes['h']]].read()
+            else:
+                A = 0
+            if lanes["enb"]:    
+                B = self.__register[regs[lanes['bbus']]].read()
+            else:
+                B=0
+            if lanes["inva"]:
+                A = ~A
+            if lanes["f0"] == 0:
+                if lanes["f1"] == 1:
+                    erg = A | B
+                else:
+                    erg = A & B
+
+            else:
+                if lanes["f1"] == 0:
+                    erg = ~B
+                else:
+                    erg = A + B
+            if lanes["inc"]:
+                erg = erg + 1
+                
+            if erg == 0:
+                self.CPU.set_z(1)
+            else:
+                self.CPU.set_z(0)
+            if erg < 0:
+                self.CPU.set_n(1)
+            else:
+                self.CPU.set_n(0)
+            self.__register["shift"].write(erg)    
+
+            # verschiebung durchfuehren
+            if lanes["sll8"]:
+                self.__register["shift"].sll8()
+            if lanes["sra1"]:
+                self.__register["shift"].sra1()
+            # Ergebnis auf Bis C legen
+            erg = self.__register["shift"].read()
+            # send on serial Interface
+            if self.__bbc.get():
+                if lanes["enb"]:
+                    B = str(regs[lanes['bbus']])
+                else:
+                    B ="0"
+                if lanes["ena"]:
+                    H = "H"
+                else:
+                    H = "0"
+                if lanes["f0"] == 0 and lanes["f1"] == 0:
+                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#&\r\n",'ascii'))
+                elif lanes["f1"] == 0 and lanes["f0"] == 1:
+                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#|\r\n",'ascii'))
+                elif lanes["f1"] == 1 and lanes["f0"] == 0:
+                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#-\r\n",'ascii'))
+                else:
+                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#+\r\n",'ascii'))
+
+            # Wert von Bus C in Register Ueuebernehmen
+            
+            for i in self.__register:
+                if i != "shift" and i != "mbr" and i != "mbru" and lanes[i]:
+                    self.__register[i].write(erg)
+                    if self.__bbc.get():
+                        self.__serial.write(bytes(i.upper()+"#"+str(erg)+"\r\n",'ascii'))
+            # Speichersignale senden
+            addr = self.__register["mar"].read()
+            pc = self.__register["pc"].read()
+            
+            if self.__mem_wr:
+                val = self.__register["mdr"].read()
+                self.mainstorage.save_word(self.__mem_addr,val)
+            if self.__mem_rd:
+                val = self.mainstorage.read_word(self.__mem_addr)
+                self.__register["mdr"].write(val)
+                if self.__bbc.get():
+                        self.__serial.write(bytes("MBR#"+str(val)+"\r\n",'ascii'))
+            if self.__mem_fetch:
+                val = self.mainstorage.read_byte(self.__mem_pc)
+                self.__register["mbr"].write(val)
+                if self.__bbc.get():
+                        self.__serial.write(bytes("MBR#"+str(val)+"\r\n",'ascii'))
+            # Signale auswerten fuer naechsten Takt    
+            self.__mem_wr = lanes["write"]
+            self.__mem_rd = lanes["read"]
+            self.__mem_fetch = lanes["fetch"]
+            self.__mem_pc   = pc
+            self.__mem_addr = addr
+            # naechste Addresse im Microprogramm berechnen
+            naddr = lanes["next_address"]
+            jpc  = lanes["jmpc"]
+            
+            if jpc:
+                naddr = naddr | self.__register["mbr"].read()
+            if lanes['jamz'] and self.CPU.get_state_z:
+                naddr = naddr ^ (2**8)
+            if lanes['jamn'] and self.CPU.get_state_n:
+                naddr = naddr ^ (2**8)
+                
+            self.mpc.set_value(naddr)
+            
+            
     def draw_datapath(self):
         # draw ALU
         #self.__fr.create_rectangle(153,360,233,340,fill='yellow')
@@ -486,11 +722,11 @@ class om:
         self.__register["cpp"] = register(self.__fr,153,240,"CPP")
         self.__register["lv"] = register(self.__fr,153,205,"LV")
         self.__register["sp"] = register(self.__fr,153,170,"SP")
-        self.__register["mbr"] = register(self.__fr,153,135,"MBR")
+        self.__register["mbru"] = self.__register["mbr"] = register(self.__fr,153,135,"MBR")
         self.__register["pc"] = register(self.__fr,153,100,"PC")
         self.__register["mdr"] = register(self.__fr,153,65,"MDR")
         self.__register["mar"] = register(self.__fr,153,30,"MAR")
-        
+
         # schieberegister
         self.__register["shift"] = register(self.__fr,240,560,"")
 
@@ -548,14 +784,17 @@ class Abus:
             self.lanes[i].append(line)
     def update(self,value):
         for i in range(0,32):
+            k = 0
             if value % 2:
                 #print("value: " + str(i))
-                for k in self.lanes[i]:
-                    self.__canvas.itemconfig(k,fill="black")
+                value = value - 1
+                for l in self.lanes[k]:
+                    self.__canvas.itemconfig(l,fill="black")
             else:
-                for k in self.lanes[i]:
-                    self.__canvas.itemconfig(k,fill="grey")
+                for l in self.lanes[k]:
+                    self.__canvas.itemconfig(l,fill="grey")
             value = value/2
+            k = k +1
     def write(self,val):
         self.__value = val
         self.update(self.__value)
@@ -573,15 +812,18 @@ class Bbus:
             line = self.__canvas.create_line(330+(2*i),400,330+(2*i),15,fill="grey")
             self.lanes[i].append(line)
     def update(self,value):
+        k = 0
         for i in range(0,32):
             if value % 2:
                 #print("value: " + str(i))
-                for k in self.lanes[i]:
-                    self.__canvas.itemconfig(k,fill="black")
+                value = value - 1
+                for l in self.lanes[k]:
+                    self.__canvas.itemconfig(l,fill="black")
             else:
-                for k in self.lanes[i]:
-                    self.__canvas.itemconfig(k,fill="grey")
+                for l in self.lanes[k]:
+                    self.__canvas.itemconfig(l,fill="grey")
             value = value/2
+            k = k + 1
     def write(self,val):
         self.__value = val
         self.update(self.__value)
@@ -603,15 +845,18 @@ class Cbus:
             line = self.__canvas.create_line(130-(2*i),565+(2*i),130-(2*i),15,fill="grey")
             self.lanes[i].append(line)
     def update(self,value):
+        k = 0
         for i in range(0,32):
             if value % 2:
                 #print("value: " + str(i))
-                for k in self.lanes[i]:
-                    self.__canvas.itemconfig(k,fill="black")
+                value = value - 1
+                for l in self.lanes[k]:
+                    self.__canvas.itemconfig(l,fill="black")
             else:
-                for k in self.lanes[i]:
-                    self.__canvas.itemconfig(k,fill="grey")
+                for l in self.lanes[k]:
+                    self.__canvas.itemconfig(l,fill="grey")
             value = value/2
+            k = k +1
     def write(self,val):
         self.__value = val
         self.update(self.__value)
@@ -663,17 +908,26 @@ class CPU:
 
             
     def ausgabe(self,value):
+        k = 0
+        print("Ausgabe: " + str(value))
         for i in range(0,32):
             if value % 2:
-                
-                for k in self.lanes[i]:
-                    self.__canvas.itemconfig(k,fill="black")
+                value = value -1
+                for l in self.lanes[k]:
+                    self.__canvas.itemconfig(l,fill="black")
             else:
-                for k in self.lanes[i]:
-                    self.__canvas.itemconfig(k,fill="grey")
+      
+                for l in self.lanes[k]:
+                    self.__canvas.itemconfig(l,fill="grey")
             value = value/2
+            k = k + 1
 
     def compute(self,A_Bus,B_Bus,state,shift):
+        # 0 0  AND
+        # 0 1  OR
+        # 1 0  NEG 
+        # 1 1  ADD
+        
         if state["ena"]:
             A = A_Bus.read()
         else:
@@ -681,7 +935,7 @@ class CPU:
         if state["enb"]:    
             B = B_Bus.read()
         else:
-            B=0
+            B=0    
         if state["inva"]:
             A = ~A
         if state["f0"] == 0:
@@ -697,8 +951,8 @@ class CPU:
                 erg = A + B
         if state["inc"]:
             erg = erg + 1
+            
         self.ausgabe(erg)
-
         if erg == 0:
             self.set_z(1)
         else:
@@ -762,7 +1016,7 @@ class MPM:
         self.__mem = []
         self.__current = [None,None,None]
         for i in range(0,512):
-            self.__mem.append([4731948914,None,"black"])
+            self.__mem.append([000000000,None,"black"])
         print("MPM gefuellt")    
         self.refresh()
         print("Nach refresh")
@@ -772,11 +1026,11 @@ class MPM:
     def insert(self,address,command,color):
         self.__mem[address][0]=command
         self.__mem[address][2]=color
-        print("refresh in insert command")
+        
         self.refresh()
 
     def read(self,address):
-        self.refresh()
+        #self.refresh()
         print("Adresse: " + str(address))
         if self.__current[1] != None:
             self.__canvas.itemconfig(self.__current[1],fill=self.__current[2])
@@ -804,20 +1058,19 @@ class MPM:
             self.__mem[i][1] = cell
             
     def draw_tooltip(self,event):
-        
         element = event.widget.find_overlapping(event.x-2,event.y-2,event.x+2,event.y+2)
         tags = self.__canvas.gettags("current")
-        print(bin(self.__mem[int(tags[0])][0])[2:len(bin(self.__mem[int(tags[0])][0]))].rjust(36,"0"))       
+        #print(bin(self.__mem[inttags[0])][0])[2:len(bin(self.__mem[int(tags[0])][0]))].rjust(36,"0"))       
         
 
     def load_command(self,event):
-        
         element = event.widget.find_overlapping(event.x-2,event.y-2,event.x+2,event.y+2)
         tags = self.__canvas.gettags("current")
         mikrocommand = self.__mem[int(tags[0])][0]
+        color = self.__mem[int(tags[0])][2]
         print("load_command " + str(mikrocommand))
         try:
-            self.__om.microeditor.load(mikrocommand,tags[0])
+            self.__om.microeditor.load(mikrocommand,tags[0],color)
         except:
             raise()
             print("microeditor not open!")
@@ -878,33 +1131,10 @@ class screen:
         #self.canvas.create_rectangle(590,390,600,400,fill="red")         
     def key_pressed(self,event):
         char = event.char
-        print("Taste gedruckt: " + str(ord(char)))
+        self.__memory.set_char()
+        if len(char) > 0:
+            print("Taste gedruckt: " + str(ord(char)))
         
-class assembler:
-    def __init__(self,typ):
-        self.__typ = typ
-        self.__mapper = {}
-        self.__mapper['mov']='\x01'
-        self.__mapper['shift']='\x02'
-        self.__mapper['add']='\x03'
-        self.__mapper['jmp']='\x03'
-        self.__mapper['equ']='\x04'
-
-    def assemble(self,code):
-        adresses = {}
-        commands = []
-        for i in code:
-            if i[0] == ':':
-                adresses[i[1:len(i)]]=str(len(commands))
-            else:
-                commands.append(i)
-        code = []
-        for c in commands:
-            if c.split(' ')[0] == 'jmp':
-                code.append(self.__mapper['jmp'] + adresses[c.split(' ')[1]])
-            else:
-                code.append(self.__mapper[c.split(' ')[0]])
-        return code
 t = Tk()
 mb = Menu(t)
 t.title('Oktopus machine')
@@ -912,14 +1142,20 @@ t.title('Oktopus machine')
 ms = mainstorage(t,4096)
 
 #self.console.draw(1,0,[0,66,66,126,66,66,66,0])
-
-o = om(t,ms)
+bbc = BooleanVar()
+o = om(t,ms,bbc)
 load_menu = Menu(mb)
+config_menu = Menu(mb)
+reset_menu = Menu(mb)
 load_menu.add_command(label="Load Memory",command=o.load_mem)
 load_menu.add_command(label="Load Microprogram", command = o.load_mic)
+reset_menu.add_command(label="reset Register",command = o.reset_reg)
 mb.add_cascade(label="load",menu=load_menu)
+mb.add_cascade(label="reset",menu=reset_menu)
+mb.add_cascade(label="config",menu=config_menu)
 mb.add_command(label="Save Microprogram", command = o.save_mic)
 mb.add_command(label="Setup Microprogramm",command=o.create_microcommand)
 mb.add_command(label="Console",command=ms.start_console)
+config_menu.add_checkbutton(label="BBC",onvalue=1, offvalue=0, variable=bbc)
 t.config(menu=mb)
 t.mainloop()
