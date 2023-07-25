@@ -1,0 +1,51 @@
+C-Pseudotext
+------------
+
+// Funktion zur Erweiterung der Schlangenlänge
+void WachstumDerSchlange() {
+    // Neue Schlangen-Körpersegmentadresse
+    AdresseNeuerKörper = NeueAdresseFürKörpersegment();
+
+    // Lade das Schlangen-Körpersegment-Icon an die neue Adresse
+    Lade(SchlangenKörperIcon, AdresseNeuerKörper);
+
+    // Füge die neue Adresse des Körpersegments am Ende der Körpersegmente hinzu
+    // Verschiebe alle vorherigen Körpersegmente um eine Position nach hinten
+    for (int i = AnzahlKörperMax - 1; i >= SchlangeSegmenteBeginn + AnzahlFrüchte + 1; i--) {
+        // Verschiebe das Körpersegment
+        SchlangenKörper[i] = SchlangenKörper[i - 1];
+    }
+
+    // Setze die neue Adresse des Körpersegments als nächstes Körpersegment hinter dem Kopf
+    SchlangenKörper[SchlangeSegmenteBeginn + AnzahlFrüchte] = AdresseNeuerKörper;
+
+    // Erhöhe die Anzahl der Körperteile um eins
+    AnzahlKörperMax = AnzahlKörperMax + 1;
+}
+
+// Funktion zur Bestimmung der neuen Adresse für das nächste Körpersegment
+AdresseTyp NeueAdresseFürKörpersegment() {
+    // Hier müsste Logik für Ermittlung der nächsten freien Speicheradresse hin idk
+    // das hängt davon ab, wie wir die Adressen verwalten und zuweisen
+    // man könnte hier auch nen Algorithmus wählen um eine freie Adresse zu finden
+    // Rückgabe der neuen Adresse
+}
+
+// Hauptprogramm
+int main() {
+    // Hier werden andere Teile des Programms initialisiert, wie Spielfeld, Eingabeabfragen, etc.
+
+    while (AnzahlKörperMax > (SchlangeSegmenteBeginn + AnzahlFrüchte)) {
+        // Rest des Codes wie vorher...
+
+        // Falls eine Frucht eingesammelt wurde, führe das Wachstum der Schlange aus
+        if (Schlangenkopf == Frucht1 || Schlangenkopf == Frucht2 || Schlangenkopf == Frucht3 || Schlangenkopf == Frucht4 || Schlangenkopf == Frucht5) {
+            WachstumDerSchlange();
+        }
+
+        // Kp man kann hier bestimmt auch noch was cooles hinschreiben
+    }
+
+    // Bla bla bla Code bla bla bla
+    return 0;
+}

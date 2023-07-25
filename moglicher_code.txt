@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition der maximalen Länge der Schlange
+#define MaxSnakeLength 100
+
+// Definition der Struktur für die Position eines Körperteils
+typedef struct {
+    int x;
+    int y;
+} Position;
+
+// Definition der Struktur für die Schlange
+typedef struct {
+    Position segments[MaxSnakeLength];
+    int length;
+} Snake;
+
+// Funktion zur Erweiterung der Schlangen-Länge
+void growSnake(Snake *snake) {
+    if (snake->length < MaxSnakeLength) {
+        // Das neue Körperteil wird an der Position des letzten Körperteils hinzugefügt
+        Position newSegment = snake->segments[snake->length - 1];
+        snake->segments[snake->length] = newSegment;
+        snake->length++;
+    }
+}
+
+int main() {
+    // Initialisierung der Schlange
+    Snake snake;
+    snake.length = 1;
+    snake.segments[0].x = 5; // Beispiel-Koordinaten für den Kopf der Schlange
+    snake.segments[0].y = 5;
+
+    // Beispiel: Schlange wächst um 3 Körperteile
+    growSnake(&snake);
+    growSnake(&snake);
+    growSnake(&snake);
+
+    // Ausgabe der Koordinaten aller Körperteile
+    printf("Schlange-Koordinaten:\n");
+    for (int i = 0; i < snake.length; i++) {
+        printf("Segment %d: x = %d, y = %d\n", i, snake.segments[i].x, snake.segments[i].y);
+    }
+
+    return 0;
+}
