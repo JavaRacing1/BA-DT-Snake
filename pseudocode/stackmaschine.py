@@ -53,18 +53,26 @@ class maschine:
     def __init_ram_window(self):
         ram_window = tk.Toplevel()
         scrollbar = tk.Scrollbar(ram_window, orient=tk.VERTICAL)
-        self.__ram_canvas = tk.Canvas(ram_window, width=400, height=200, scrollregion=(0,0,0,300), yscrollcommand=scrollbar.set)
+        self.__ram_canvas = tk.Canvas(ram_window, width=600, height=400, scrollregion=(0,0,0, ((1512 // 4) + 8 ) * 25), yscrollcommand=scrollbar.set)
         self.__ram_canvas.pack(side="left")
         scrollbar.config(command=self.__ram_canvas.yview)
         scrollbar.pack(fill="y", side="right", expand=False)
 
-        self.__ram_canvas.create_text(25, 10, text="STACK:", font=("Arial", 10, "bold"))
-        rect_width = 50
-        rect_height = 20
+        self.__ram_canvas.create_text(150, 10, text="STACK:", font=("Arial", 10, "bold"))
+        self.__ram_canvas.create_text(450, 10, text="GPM:", font=("Arial", 10, "bold"))
+        rect_width = 70
+        rect_height = 25
         for i in range(512):
-            col = i % 8
-            row = i // 8
-            self.__ram_canvas.create_rectangle(40 + col * rect_width, 8 + row * rect_height, 38 + (col+1) * rect_width, 6 + (row+1) * rect_height)
+            col = i % 4
+            row = i // 4
+            self.__ram_canvas.create_rectangle(10 + col * rect_width, 20 + row * rect_height, 10 + col * rect_width + (rect_width - 5), 20 + row * rect_height + (rect_height - 10))
+            self.__ram_canvas.create_text(14 + col * rect_width, 28 + row * rect_height, text=str(i) + ": " + str(self.__ram[i]), anchor='w', font=("Arial", 9))
+        for i in range(512, 2048):
+            col = i % 4
+            row = (i-512) // 4
+            self.__ram_canvas.create_rectangle(310 + col * rect_width, 20 + row * rect_height, 310 + col * rect_width + (rect_width - 5), 20 + row * rect_height + (rect_height - 10))
+            self.__ram_canvas.create_text(314 + col * rect_width, 28 + row * rect_height, text=str(i) + ": " + str(self.__ram[i]), anchor='w', font=("Arial", 9))
+
 
 
     def draw_row(self, addr, value):
