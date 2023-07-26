@@ -1,7 +1,7 @@
 import tkinter as tk
 
 class maschine:
-    def __init__(self, tk_widget: tk.Tk, snake: tk.Toplevel, bg_color: str ="black", icon_color: str = "lightgreen"):
+    def __init__(self, tk_widget: tk.Tk, bg_color: str ="black", icon_color: str = "lightgreen"):
         self.__ram = {}
         self.__display = {}
         self.input = 0
@@ -29,10 +29,12 @@ class maschine:
         
         from snake_code import loop_init
 
-        start_button = tk.Button(text="Start", width=5, height=2, command= lambda : loop_init(tk_widget, self))
+        start_button = tk.Button(tk_widget ,text="Start", width=5, height=2, command= lambda : loop_init(tk_widget, self))
         start_button.pack(side="top", padx=5, pady=5)
-        stop_button = tk.Button(text="Stop", width=5, height=2, command = lambda: self.__stop())
+        stop_button = tk.Button(tk_widget ,text="Stop", width=5, height=2, command = lambda: self.__stop())
         stop_button.pack(side="top", padx=5)
+
+        self.__init_ram_window()
 
     def __fill_storage(self):
         for i in range(4096):
@@ -47,6 +49,23 @@ class maschine:
 
     def __stop(self):
         self.stopped = True
+
+    def __init_ram_window(self):
+        ram_window = tk.Toplevel()
+        scrollbar = tk.Scrollbar(ram_window, orient=tk.VERTICAL)
+        self.__ram_canvas = tk.Canvas(ram_window, width=400, height=200, scrollregion=(0,0,0,300), yscrollcommand=scrollbar.set)
+        self.__ram_canvas.pack(side="left")
+        scrollbar.config(command=self.__ram_canvas.yview)
+        scrollbar.pack(fill="y", side="right", expand=False)
+
+        self.__ram_canvas.create_text(25, 10, text="STACK:", font=("Arial", 10, "bold"))
+        rect_width = 50
+        rect_height = 20
+        for i in range(512):
+            col = i % 8
+            row = i // 8
+            self.__ram_canvas.create_rectangle(40 + col * rect_width, 8 + row * rect_height, 38 + (col+1) * rect_width, 6 + (row+1) * rect_height)
+
 
     def draw_row(self, addr, value):
         if (addr > 4095):
@@ -192,6 +211,5 @@ class maschine:
 
 if __name__ == '__main__':
     root = tk.Tk(className="Stackmaschine")
-    snake = tk.Toplevel()
-    machine = maschine(root, snake, "black", "lightgreen")
+    machine = maschine(root, "black", "lightgreen")
     root.mainloop()
