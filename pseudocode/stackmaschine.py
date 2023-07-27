@@ -153,9 +153,8 @@ class maschine:
                     self.__display[addr - 4096] = value
                     self.draw_row(addr, value)
 
-
-    def load8(self, addr: int):
-        addr = addr + 512
+    def dload8(self):
+        addr = self.__ram[0] + 512
         if addr < 0 or (addr > 2047 and addr < 4096):
             return
         
@@ -163,14 +162,31 @@ class maschine:
             value = self.__display[addr - 4096]
         else:
             value = self.__ram[addr]
+        self.pop()
         self.push(value)
 
-    def store(self, addr:int):
-        addr = addr + 512
+    def dload16(self):
+        addr = self.__ram[0] + 512
+        if addr < 0 or (addr > 2047 and addr < 4096):
+            return
+        
+        if addr > 4095:
+            value1 = self.__display[addr - 4096]
+            value2 = self.__display[addr + 1 - 4096]
+        else:
+            value1 = self.__ram[addr]
+            value2 = self.__ram[addr + 1]
+        self.pop()
+        value = (value1 << 8) + value2
+        self.push(value)
+    
+    def dstore(self):
+        addr = self.__ram[0] + 512
 
         if addr < 0 or (addr > 2047 and addr < 4096):
             return
         
+        self.pop()
         value = self.__ram[0]
 
         if addr > 4095:
@@ -178,7 +194,6 @@ class maschine:
             self.draw_row(addr, value)
         else:
             self.__save_byte(addr, value)
-        
     
     def push(self, value: int):
         for i in range(510, -1, -1):
