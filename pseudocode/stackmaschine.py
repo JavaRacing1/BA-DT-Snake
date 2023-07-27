@@ -57,23 +57,29 @@ class maschine:
         self.__ram_canvas.pack(side="left")
         scrollbar.config(command=self.__ram_canvas.yview)
         scrollbar.pack(fill="y", side="right", expand=False)
+        self.__ram_storage = []
 
         self.__ram_canvas.create_text(150, 10, text="STACK:", font=("Arial", 10, "bold"))
         self.__ram_canvas.create_text(450, 10, text="GPM:", font=("Arial", 10, "bold"))
+        
         rect_width = 70
         rect_height = 25
         for i in range(512):
             col = i % 4
             row = i // 4
-            self.__ram_canvas.create_rectangle(10 + col * rect_width, 20 + row * rect_height, 10 + col * rect_width + (rect_width - 5), 20 + row * rect_height + (rect_height - 10))
-            self.__ram_canvas.create_text(14 + col * rect_width, 28 + row * rect_height, text=str(i) + ": " + str(self.__ram[i]), anchor='w', font=("Arial", 9))
+            rect = self.__ram_canvas.create_rectangle(10 + col * rect_width, 20 + row * rect_height, 10 + col * rect_width + (rect_width - 5), 20 + row * rect_height + (rect_height - 10), fill="#FFFB8A")
+            text = self.__ram_canvas.create_text(14 + col * rect_width, 28 + row * rect_height, text=str(i) + ": " + str(self.__ram[i]), anchor='w', font=("Arial", 9))
+            self.__ram_storage.append({'rect': rect, 'text': text})
         for i in range(512, 2048):
             col = i % 4
             row = (i-512) // 4
-            self.__ram_canvas.create_rectangle(310 + col * rect_width, 20 + row * rect_height, 310 + col * rect_width + (rect_width - 5), 20 + row * rect_height + (rect_height - 10))
-            self.__ram_canvas.create_text(314 + col * rect_width, 28 + row * rect_height, text=str(i) + ": " + str(self.__ram[i]), anchor='w', font=("Arial", 9))
+            rect = self.__ram_canvas.create_rectangle(310 + col * rect_width, 20 + row * rect_height, 310 + col * rect_width + (rect_width - 5), 20 + row * rect_height + (rect_height - 10), fill="#FFFB8A")
+            text = self.__ram_canvas.create_text(314 + col * rect_width, 28 + row * rect_height, text=str(i) + ": " + str(self.__ram[i]), anchor='w', font=("Arial", 9))
+            self.__ram_storage.append({'rect': rect, 'text': text})
 
-
+    def __save_byte(self, addr, value):
+        self.__ram[addr] = value
+        self.__ram_canvas.itemconfig(self.__ram_storage[addr]['text'], text=str(addr) + ": " + str(value))
 
     def draw_row(self, addr, value):
         if (addr > 4095):
@@ -142,7 +148,7 @@ class maschine:
                     value = int(l[1])
 
                 if (addr < 4096):
-                    self.__ram[addr] = value
+                    self.__save_byte(addr, value)
                 else:
                     self.__display[addr - 4096] = value
                     self.draw_row(addr, value)
@@ -171,21 +177,21 @@ class maschine:
             self.__display[addr - 4096] = value
             self.draw_row(addr, value)
         else:
-            self.__ram[addr] = value
+            self.__save_byte(addr, value)
         
     
     def push(self, value: int):
         for i in range(510, -1, -1):
             if self.__ram[i] != 0:
-                self.__ram[i + 1] = self.__ram[i]
-        self.__ram[0] = value
+                self.__save_byte(i + 1, self.__ram[i])
+        self.__save_byte(0, value)
 
     def pop(self):
         self.__ram[0] = 0
         for i in range(1, 512):
             if (self.__ram[i] != 0):
-                self.__ram[i - 1] = self.__ram[i]
-                self.__ram[i] = 0
+                self.__save_byte(i - 1, self.__ram[i])
+                self.__save_byte(i, 0)
     
     def add(self):
         first_value = self.__ram[0]
@@ -204,10 +210,10 @@ class maschine:
         self.push(new_value)
 
     def inc(self):
-        self.__ram[0] = self.__ram[0] + 1
+        self.__save_byte(0, self.__ram[0] + 1)
     
     def dec(self):
-        self.__ram[0] = self.__ram[0] - 1
+        self.__save_byte(0, self.__ram[0] - 1)
 
     def swap(self):
         first_value = self.__ram[0]
