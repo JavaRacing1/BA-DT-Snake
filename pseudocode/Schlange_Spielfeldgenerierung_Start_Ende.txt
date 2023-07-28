@@ -5,29 +5,41 @@ def load_icon(icon_addr, display_addr):
         load(icon_addr + i)
         store(display_addr + i)
 
+Wir müssen nochmal schauen welche der load-Befehle wir wie nutzen können, um alle Icons zu laden.
+Ich geh für den Code erstmal von einer 1-1 Variante aus, wo eine der 6 Bitzeilen, die das Icon bilden, ins Programm reinlädt 
+Das macht dann am Ende die großen Laufzeiten der Schleifen aus
+Für den oberen und unteren Rand wären es ja 30 Icons und pro Icon 6 Zeilen die geladen werden müssen --> 180 Schleifendurchläufe
+Für die seitlichen Ränder sind es nur 18 Icons die geladen werden müssen, da ich jeweils eins aus dem oberen und unteren Rand schon abgearbeitet habe
+18 Icons mit je 6 Bitadressen macht 108 Durchläufe der Schleifen für rechts und links
+
+Wenn es aber gehen würde, mit dem load8 Befehl jeweils 1 Icon zu laden, würde ich die Schleifen noch einmal dazu anpassen
+Da brauch ich aber ein passendes Beispiel/Testphase zu mit den jeweiligen Compiler, den uns die andere Gruppe ja hoffentlich noch geben wird
+
+Zwecks den Reinladen der Texte für die Sieg/ Niederlagen Screens oder den Schlangenkopf werden wir wohl oder übel alles per Hand reinschreiben müssen
+Bzw. wir können das doch irgendwie aus den Datein rausladen, da könnten wir vielleicht nochmal puky fragen
+
 oberer Rand:
 Erstes Icon beginnt bei Adresse 4097 und endet bei Adresse 4102
-Nächstes Icon beginnt erst bei Adresse 4105, also eine Lücke (ZeichenLücke ZL von 2 Adressen (Adresse 4103 und 4104)
-oberer Rand hat 30 zu generierende Icons, also 30 Schleifendurchläufe wenn man jedes Icon einzeln mit 6 load und 6 store Befehlen in die Console reinladen will
+Nächstes Icon beginnt erst bei Adresse 4105, also eine Lücke (ZeichenLücke ZL von 2 Adressen (Adresse 4103 und 4104))
 
 C-Schleife
 
 Rand_Oben
 
-for (i=0, j=4097, ZL=0; i<180 ;i++, j++ ZL++)
+for (i=0, j=4097, ZL=0; i<180 ;i++, j++ ZL++) //j ist die Adresse des Icons
 {
-if (ZL < 6)
+if (ZL < 6) // immer in den ersten 6 Durchläufen (ZL von 0 bis 5) werden die Adressen rein geladen oder auf die Konsole gespeichert
 {
 lade(j,0x7e) // lade(Adresse im Register, Bitwert für "Farbe") um das ins Programm reinzubekommen
 speicher(j,0x7e) // speicher(Adresse im Register, Bitwert für "Farbe") um auf Konsole das anzuzeigen
 }
-if (ZL > 5)
+if (ZL > 5) // wenn ZL = 6 wird keine Adresse mehr geladen oder gespeichert, weil wir uns im Bereich der Lücke zwischen den Icons befinden
 {
 	j++;
-	ZL = -1;
+	ZL = -1; //Hoffe mal man kann einen Int-Wert negativ initialisieren/ mit einer negativen Zahl überschreiben
 }
 }
-
+//Hypothetische Adresswerte
 i = 0 j = 4097 ZL = 0 Lade(4097) Speicher(4097)
 i = 1 j = 4098 ZL = 1 Lade(4098) Speicher(4098)
 i = 2 j = 4099 ZL = 2 Lade(4099) Speicher(4099)
