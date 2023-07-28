@@ -1,0 +1,117 @@
+Idee für Python Struktur:
+
+def load_icon(icon_addr, display_addr):
+    for i in range(8):
+        load(icon_addr + i)
+        store(display_addr + i)
+
+oberer Rand:
+Erstes Icon beginnt bei Adresse 4097 und endet bei Adresse 4102
+Nächstes Icon beginnt erst bei Adresse 4105, also eine Lücke (ZeichenLücke ZL von 2 Adressen (Adresse 4103 und 4104)
+oberer Rand hat 30 zu generierende Icons, also 30 Schleifendurchläufe wenn man jedes Icon einzeln mit 6 load und 6 store Befehlen in die Console reinladen will
+
+C-Schleife
+
+Rand_Oben
+
+for (i=0, j=4097, ZL=0; i<180 ;i++, j++ ZL++)
+{
+if (ZL < 6)
+{
+lade(j,0x7e) // lade(Adresse im Register, Bitwert für "Farbe") um das ins Programm reinzubekommen
+speicher(j,0x7e) // speicher(Adresse im Register, Bitwert für "Farbe") um auf Konsole das anzuzeigen
+}
+if (ZL > 5)
+{
+	j++;
+	ZL = -1;
+}
+}
+
+i = 0 j = 4097 ZL = 0 Lade(4097) Speicher(4097)
+i = 1 j = 4098 ZL = 1 Lade(4098) Speicher(4098)
+i = 2 j = 4099 ZL = 2 Lade(4099) Speicher(4099)
+i = 3 j = 4100 ZL = 3 Lade(4100) Speicher(4100)
+i = 4 j = 4101 ZL = 4 Lade(4101) Speicher(4101)
+i = 5 j = 4102 ZL = 5 Lade(4102) Speicher(4102)
+i = 6 j = 4104 ZL = -1 Lade(-) Speicher(-)
+i = 7 j = 4105 ZL = 0 Lade(4105) Speicher(4105)
+
+
+unterer Rand von Schleifenstruktur gleich zu Rand oben
+Rand_unten
+
+for (i = 0, j = 8657, ZL = 0;i < 180; i++, j++, ZL++)
+{
+if (ZL < 6)
+{
+lade(j,0x7e)
+speicher(j,0x7e)
+}
+if (ZL > 5)
+{
+	j++; // von 4103 (Adresse des 6ten Durchlaufs)  + 1 auf 4104 erhöhen, da mit 7ten Durchlauf der Schleife Adresse wieder richtig auf Adresse 4105 steht
+	ZL = -1;
+}
+}
+
+linker und Rechter Rand haben auch gleiche Struktur (18 Durchläufe pro Seite)
+Rand_Links
+
+for (i = 0, j = 4337, ZL = 0;i < 108; i++, j++, ZL++)
+{
+if (ZL < 6)
+{
+lade(j,0x7e)
+speicher(j,0x7e)
+}
+if (ZL > 5)
+{
+	j = j + 233 //Sprung in nächste Zeile um das vordere Lücke des nächste linke Randicon zu treffen, nächster Schleifendurchlauf trifft das Icon
+	ZL = -1;
+}
+}
+
+i = 0 j = 4337 ZL = 0 Lade(4337) Speicher(4337)
+i = 1 j = 4338 ZL = 1 Lade(4338) Speicher(4338)
+i = 2 j = 4339 ZL = 2 Lade(4339) Speicher(4339)
+i = 3 j = 4340 ZL = 3 Lade(4340) Speicher(4340)
+i = 4 j = 4341 ZL = 4 Lade(4341) Speicher(4341)
+i = 5 j = 4342 ZL = 5 Lade(4342) Speicher(4342)
+i = 6 j = 4576 ZL = -1 Lade(-) Speicher(-)
+i = 7 j = 4577 ZL = 0 Lade(4577) Speicher(4577)
+
+Rand_Rechts
+
+for (i = 0, j = 4569, ZL = 0;i < 108; i++, j++, ZL++)
+{
+if (ZL < 6)
+{
+lade(j,0x7e) 
+speicher(j,0x7e)
+}
+if (ZL > 5)
+{
+	j = j + 233 //Sprung in nächste Zeile um das vordere Lücke des nächste linke Randicon zu treffen, nächster Schleifendurchlauf trifft das Icon
+	ZL = -1;
+}
+}
+
+SchlangenKopf zum Spielstart mit initialisieren
+
+lade(6368,0x3c)
+speicher(6368,0x3c)
+lade(6369,0x42)
+speicher(6369,0x42)
+lade(6370,0x81)
+speicher(6370,0x81)
+lade(6371,0xa5)
+speicher(6371,0xa5)
+lade(6372,0xa5)
+speicher(6372,0xa5)
+lade(6373,0x81)
+speicher(6373,0x81)
+lade(6374,0x42)
+speicher(6374,0x42)
+lade(6375,0x3c)
+speicher(6375,0x3c)
