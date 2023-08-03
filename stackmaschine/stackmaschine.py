@@ -45,7 +45,7 @@ class maschine:
     def __key_pressed(self, event):
         char = event.char
         if len(char)>0:
-            print(str(ord(char)))
+            self.__save_byte(2047, ord(char))
 
     def __stop(self):
         self.stopped = True
@@ -194,7 +194,28 @@ class maschine:
             self.draw_row(addr, value)
         else:
             self.__save_byte(addr, value)
-    
+
+    def dstore16(self):
+        addr = self.__ram[0] + 512
+
+        if addr < 0 or (addr > 2047 and addr < 4096):
+            return
+        
+        self.pop()
+        value = self.__ram[0]
+        v1 = value >> 8
+        v2 = value & 255
+        print(addr, value, v1, v2)
+
+        if addr > 4095:
+            self.__display[addr - 4096] = v1
+            self.__display[addr + 1 - 4096] = v2
+            self.draw_row(addr, v1)
+            self.draw_row(addr + 1, v2)
+        else:
+            self.__save_byte(addr, v1)
+            self.__save_byte(addr + 1, v2)
+
     def push(self, value: int):
         for i in range(510, -1, -1):
             if self.__ram[i] != 0:
@@ -202,7 +223,7 @@ class maschine:
         self.__save_byte(0, value)
 
     def pop(self):
-        self.__ram[0] = 0
+        self.__save_byte(0, 0)
         for i in range(1, 512):
             if (self.__ram[i] != 0):
                 self.__save_byte(i - 1, self.__ram[i])
@@ -237,6 +258,11 @@ class maschine:
         self.pop()
         self.push(first_value)
         self.push(second_value)
+
+    def jmc(self):
+        first_value = self.__ram[0]
+        second_value = self.__ram[1]
+        return first_value == second_value
 
 if __name__ == '__main__':
     root = tk.Tk(className="Stackmaschine")
