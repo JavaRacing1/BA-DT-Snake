@@ -4,6 +4,7 @@ from tkinter import *
 from tkinter import filedialog
 from threading import Thread
 from threading import Timer
+from optparse import OptionParser
 import serial
 print("starting oktopus machine!")
 class mainstorage:
@@ -11,7 +12,8 @@ class mainstorage:
         self.__mainstorage = []
         self.__size = size
         self.__buffer = []
-        self.__char = ""
+        self.__input_read_flag = 0
+        self.__input_buffer = 0
         self.console = None
         self.__last_read_byte = 0
         self.__last_write_byte = 0
@@ -37,7 +39,8 @@ class mainstorage:
         self.console = screen(self)
 
     def set_char(self,c):
-        self.__char = c
+        self.__input_buffer = c
+        self.__input_read_flag = 1
 
     def reset_history_read_byte(self):
         self.__fr.itemconfig(self.__mainstorage[self.__last_read_byte]['rect'],fill="yellow")
@@ -58,6 +61,8 @@ class mainstorage:
         self.__fr.itemconfig(self.__mainstorage[self.__last_write_word+3]['rect'],fill="yellow")
 
     def save_word(self,addr,value):
+        if value > 4294967295:
+            value = 4294967295
         v1 = value & 255
         v2 = value>>8 & 255
         v3 = value>>16 & 255
@@ -94,10 +99,12 @@ class mainstorage:
             self.__fr.itemconfig(self.__mainstorage[addr*4+1]['rect'],fill="lightblue")
             self.__fr.itemconfig(self.__mainstorage[addr*4+2]['rect'],fill="lightblue")
             self.__fr.itemconfig(self.__mainstorage[addr*4+3]['rect'],fill="lightblue")
-            self.__last_write_byte = addr*4
+            self.__last_write_word = addr*4
         print("save " + str(value) + " on " + str(addr))
 
     def save_byte(self,addr,value):
+       if value > 255:
+           value = 255
        if addr >= self.__size:
             if self.console != None:
                 a = addr - self.__size
@@ -115,11 +122,19 @@ class mainstorage:
            self.reset_history_write_byte()
            self.__fr.itemconfig(self.__mainstorage[addr]['rect'],fill="lightblue")
            self.__last_write_byte = addr
+           
     def read_word(self,addr):
-        if addr >= self.__size:
-            print("bad address")
+        if addr >= self.__size/4  + 1:
+            print("bad address: " + str(addr))
+        elif addr == self.__size/4:
+            self.__input_read_flag = 0
+            return self.__input_buffer
+        elif addr == self.__size/4 + 1:
+            return self.__input_read_flag
+    
         else:
             #big endian
+            print("No bad Address: " + str(addr))
             v1 = self.__mainstorage[addr*4]['val']
             v2 = self.__mainstorage[addr*4+1]['val']
             v3 = self.__mainstorage[addr*4+2]['val']
@@ -134,11 +149,16 @@ class mainstorage:
             return ret
         
     def read_byte(self,addr):
-        b = self.__mainstorage[addr]['val']
-        self.reset_history_read_byte()
-        self.__fr.itemconfig(self.__mainstorage[addr]['rect'],fill="white")
-        self.__last_read_byte = addr
-        return b
+        if addr >= self.__size:
+            print("bad address: " + str(addr))
+        else:
+            b = self.__mainstorage[addr]['val']
+            self.reset_history_read_byte()
+            self.__fr.itemconfig(self.__mainstorage[addr]['rect'],fill="white")
+            self.__last_read_byte = addr
+            return b
+        
+
         
 
 class register:
@@ -152,23 +172,28 @@ class register:
         self._value_string = self._canvas.create_text(x+35,y-10,text="0x00000000")
     def write(self,value):
         self._value = value
+
+        print("self.__value: " + str(value) + " self.__value_string: " + str(self._value_string))
         self._canvas.itemconfig(self._value_string,text=str(hex(value)))
     def reset(self):
         self._value = 0
         self._canvas.itemconfig(self._value_string,text=str(hex(0)))
 
         
-    def read(self):
-        return self._value
+    def read(self,name):
+        #Vorzeichenerweiterung
+        if name == "MBR" and self._value & 128 != 0:
+            print("Vorzeichenerweiterung: " + str(bin(self._value & 4294967040)) + " org: " + str(self._value) + "########################################" )
+            return self._value | 4294967040           
+        else:
+            return self._value  
 
-    def read_unsignt():
-        return self._value
     
     def sll8(self):
         self._value = self._value<<8
         #self._value = self.value & (2**32-1)
     def sra1(self):
-        self._value = self._value>1
+        self._value = self._value>>1
         
 class control_unit:
     def __init__(self,mir):
@@ -443,15 +468,26 @@ class om:
         self.mpc = MPC(self.__fr)
   
         self.cu = control_unit(self.mir)
-        self.A.write(8934)
-        self.B.write(15347)
-        self.C.write(15347)
+        #self.A.write(8934)
+        #self.B.write(15347)
+        #self.C.write(15347)
         self.controller = Frame(viso)
         self.controller.pack(side="bottom",fill="x")
         self.start = Button(self.controller,text="Start",command=self.start_stop)
         self.start.pack(side="left")
         self.frequency = Scale(self.controller,length=800,from_=0,to=1000,orient=HORIZONTAL,variable=self.__frequency)
         self.frequency.pack(side="left",fill=X)
+        ### parse commandline ###
+        parser = OptionParser()
+        parser.add_option("-m", "--microprogramm" , dest="microprogramm", default="",help="load am Microgramm given by filename")
+        parser.add_option("-s", "--storagedupm" , dest="storagedump", default="",help="load dump from given file to storage")
+        (options, args )= parser.parse_args()
+        if options.microprogramm != "":
+            self.insert_microcommands(options.microprogramm)
+            
+        if options.storagedump != "":
+            self.insert_memory(options.storagedump)
+        
     def reset_reg(self):
         for i in self.__register:
             self.__register[i].reset()
@@ -480,32 +516,8 @@ class om:
             self.step()
             
     def step(self):
-        if self.__frequency.get() < 3:
-            ##############################################
-            #
-            #  Fake Snakerace
-            #
-            ##############################################
+        if self.__frequency.get() < 20:
             
-            #head = self.__fake_segmente[self.__fake_head]
-            #new_head = self.__fake_segmete[(self.__fake_head + 1) % 4]
-            #schwanz = self.__fake_segmente[(self.__fake_head - 1) % 4]
-            
-            
-             
-            #self.mainstorage.save_word(head+1,0x8181423c)
-            #self.mainstorage.save_word(head,0x3c428181)
-            #self.mainstorage.save_word(schwanz + 1,0x00000000)
-            #self.mainstorage.save_word(schwanz,0x00000000)    
-            #schwanz = head + self.__fake_direction[self.__fake_pos_dir]
-            #self.mainstorage.save_word(schwanz,0x3c4281a5)
-            #self.mainstorage.save_word(schwanz+1,0xa581423c)
-            #self.__fake_head = (self.__fake_head - 1) % 4
-            #self.__fake_segmente[self.__fake_head] = schwanz
-            #self.__fake_pos_dir = (self.__fake_pos_dir + 1) % len(self.__fake_direction)
-
-            #self.mainstorage.save_word(1305,0x3c4281a5)
-            ##############################################
             #Microbefehl auswerten
             ma = self.mpc.get_value() 
             print("Adresse des naechsten Microbefehles: " + str(ma))
@@ -519,10 +531,10 @@ class om:
             # Register auf Bus B legen
             regs = ["mdr","pc","mbr","mbru","sp","lv","cpp","tos","opc"]
             print("bbus: " + str(regs[lanes['bbus']]))
-            val = self.__register[regs[lanes['bbus']]].read()
+            val = self.__register[regs[lanes['bbus']]].read(regs[lanes['bbus']].upper())
             print("value in Register " + str(lanes['bbus']) + " mit Namen " + regs[lanes['bbus']] + ": " + str(val) )
             self.B.write(val)
-            self.A.write(self.__register["h"].read())   
+            self.A.write(self.__register["h"].read("H"))   
             # Alu arbeiten lassen und Ergebnis ins Schieberegister
             self.CPU.compute(self.A,self.B,lanes,self.__register["shift"])
             # send to serial port
@@ -549,7 +561,7 @@ class om:
             if lanes["sra1"]:
                 self.__register["shift"].sra1()
             # Ergebnis auf Bis C legen
-            erg = self.__register["shift"].read()
+            erg = self.__register["shift"].read("SHIFT")
             print("Ergebnis: " + str(erg))
             # Wert von Bus C in Register Ueuebernehmen
             self.C.write(erg)
@@ -560,13 +572,14 @@ class om:
                     if self.__bbc.get():
                         self.__serial.write(bytes(i.upper()+"#"+str(erg)+"\r\n",'ascii'))
             # Speichersignale senden
-            addr = self.__register["mar"].read()
-            pc = self.__register["pc"].read()
+            addr = self.__register["mar"].read("MAR")
+            pc = self.__register["pc"].read("PC")
             print("Schreibe in Speicher auf Addresse: " + str(addr))
             if self.__mem_wr:
-                val = self.__register["mdr"].read()
+                val = self.__register["mdr"].read("MDR")
                 self.mainstorage.save_word(self.__mem_addr,val)
             if self.__mem_rd:
+                #print("read_storage from: " + str(self.__mem_addr))
                 val = self.mainstorage.read_word(self.__mem_addr)
                 self.__register["mdr"].write(val)
                 if self.__bbc.get():
@@ -587,10 +600,10 @@ class om:
             jpc  = lanes["jmpc"]
             print("Addr: " + str(naddr) + " jpc: " + str(jpc) + " jmnz: " + str(lanes["jamn"]) + " jamz: " + str(lanes["jamz"]))
             if jpc:
-                naddr = naddr | self.__register["mbr"].read()
-            if lanes['jamz'] and self.CPU.get_state_z:
+                naddr = naddr | self.__register["mbru"].read("MBRU")
+            if lanes['jamz'] and self.CPU.get_state_z():
                 naddr = naddr ^ (2**8)
-            if lanes['jamn'] and self.CPU.get_state_n:
+            if lanes['jamn'] and self.CPU.get_state_n():
                 naddr = naddr ^ (2**8)
             print("Adresse: " + str(naddr))    
             self.mpc.set_value(naddr)
@@ -599,6 +612,7 @@ class om:
             #Microbefehl auswerten
             ma = self.mpc.get_value() 
             # lade den naechsten Microbefehl in MIR
+            print("ma: " + str(ma))
             mc = self.mpm.read(ma)
             self.mir.set_value(mc)
             # Microbefehl decodieren
@@ -609,15 +623,16 @@ class om:
             #self.CPU.compute(self.A,self.B,lanes,self.__register["shift"])
             # Alu inline
             if lanes["ena"]:
-                A = self.__register[regs[lanes['h']]].read()
+                #A = self.__register[regs[lanes['h']]].read(regs[lanes['H']].upper())
+                A = self.__register['h'].read("H")
             else:
                 A = 0
             if lanes["enb"]:    
-                B = self.__register[regs[lanes['bbus']]].read()
+                B = self.__register[regs[lanes['bbus']]].read(regs[lanes['bbus']].upper())
             else:
                 B=0
             if lanes["inva"]:
-                A = ~A
+                A = ~A & 4294967295
             if lanes["f0"] == 0:
                 if lanes["f1"] == 1:
                     erg = A | B
@@ -626,20 +641,18 @@ class om:
 
             else:
                 if lanes["f1"] == 0:
-                    erg = ~B
+                    erg = ~B & 4294967295
                 else:
-                    erg = A + B
+                    # modulo 11111111111111111111111111111111 oder & 1111111111111111111111111111111111
+                    erg = (A + B) & 4294967295
             if lanes["inc"]:
-                erg = erg + 1
-                
+                erg = (erg + 1) & 4294967295
+            z = n = 0    
             if erg == 0:
-                self.CPU.set_z(1)
-            else:
-                self.CPU.set_z(0)
+                z = 1
             if erg < 0:
-                self.CPU.set_n(1)
-            else:
-                self.CPU.set_n(0)
+                n = 1 
+           
             self.__register["shift"].write(erg)    
 
             # verschiebung durchfuehren
@@ -648,50 +661,50 @@ class om:
             if lanes["sra1"]:
                 self.__register["shift"].sra1()
             # Ergebnis auf Bis C legen
-            erg = self.__register["shift"].read()
+            erg = self.__register["shift"].read("SHIFT")
             # send on serial Interface
-            if self.__bbc.get():
-                if lanes["enb"]:
-                    B = str(regs[lanes['bbus']])
-                else:
-                    B ="0"
-                if lanes["ena"]:
-                    H = "H"
-                else:
-                    H = "0"
-                if lanes["f0"] == 0 and lanes["f1"] == 0:
-                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#&\r\n",'ascii'))
-                elif lanes["f1"] == 0 and lanes["f0"] == 1:
-                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#|\r\n",'ascii'))
-                elif lanes["f1"] == 1 and lanes["f0"] == 0:
-                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#-\r\n",'ascii'))
-                else:
-                    self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#+\r\n",'ascii'))
+            #if self.__bbc.get():
+            #    if lanes["enb"]:
+            #        B = str(regs[lanes['bbus']])
+            #    else:
+            #        B ="0"
+            #    if lanes["ena"]:
+            #        H = "H"
+            #    else:
+            #        H = "0"
+            #    if lanes["f0"] == 0 and lanes["f1"] == 0:
+            #        self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#&\r\n",'ascii'))
+            #    elif lanes["f1"] == 0 and lanes["f0"] == 1:
+            #        self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#|\r\n",'ascii'))
+            #    elif lanes["f1"] == 1 and lanes["f0"] == 0:
+            #        self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#-\r\n",'ascii'))
+            #    else:
+            #        self.__serial.write(bytes("ALU" +"#" + H + "#" + B + "#+\r\n",'ascii'))
 
             # Wert von Bus C in Register Ueuebernehmen
             
             for i in self.__register:
                 if i != "shift" and i != "mbr" and i != "mbru" and lanes[i]:
                     self.__register[i].write(erg)
-                    if self.__bbc.get():
-                        self.__serial.write(bytes(i.upper()+"#"+str(erg)+"\r\n",'ascii'))
+            #        if self.__bbc.get():
+            #            self.__serial.write(bytes(i.upper()+"#"+str(erg)+"\r\n",'ascii'))
             # Speichersignale senden
-            addr = self.__register["mar"].read()
-            pc = self.__register["pc"].read()
+            addr = self.__register["mar"].read("MAR")
+            pc = self.__register["pc"].read("PC")
             
             if self.__mem_wr:
-                val = self.__register["mdr"].read()
+                val = self.__register["mdr"].read("MDR")
                 self.mainstorage.save_word(self.__mem_addr,val)
             if self.__mem_rd:
                 val = self.mainstorage.read_word(self.__mem_addr)
                 self.__register["mdr"].write(val)
-                if self.__bbc.get():
-                        self.__serial.write(bytes("MBR#"+str(val)+"\r\n",'ascii'))
+            #    if self.__bbc.get():
+            #            self.__serial.write(bytes("MBR#"+str(val)+"\r\n",'ascii'))
             if self.__mem_fetch:
                 val = self.mainstorage.read_byte(self.__mem_pc)
                 self.__register["mbr"].write(val)
-                if self.__bbc.get():
-                        self.__serial.write(bytes("MBR#"+str(val)+"\r\n",'ascii'))
+            #    if self.__bbc.get():
+            #            self.__serial.write(bytes("MBR#"+str(val)+"\r\n",'ascii'))
             # Signale auswerten fuer naechsten Takt    
             self.__mem_wr = lanes["write"]
             self.__mem_rd = lanes["read"]
@@ -701,12 +714,12 @@ class om:
             # naechste Addresse im Microprogramm berechnen
             naddr = lanes["next_address"]
             jpc  = lanes["jmpc"]
-            
+            print("Addr: " + str(naddr) + " jpc: " + str(jpc) + " jmnz: " + str(lanes["jamn"]) + " jamz: " + str(lanes["jamz"]))
             if jpc:
-                naddr = naddr | self.__register["mbr"].read()
-            if lanes['jamz'] and self.CPU.get_state_z:
+                naddr = naddr | self.__register["mbru"].read("MBRU")
+            if lanes['jamz'] and z:
                 naddr = naddr ^ (2**8)
-            if lanes['jamn'] and self.CPU.get_state_n:
+            if lanes['jamn'] and n:
                 naddr = naddr ^ (2**8)
                 
             self.mpc.set_value(naddr)
@@ -734,6 +747,9 @@ class om:
 
     def load_mem(self):
         path = filedialog.askopenfilename()
+        self.insert_memory(path)
+        
+    def insert_memory(self,path):
         f = open(path)
         code = f.readlines()
         f.close()
@@ -744,14 +760,16 @@ class om:
                 
 
         print("speicheradresse 5: " + str(self.mainstorage.read_byte(3)))
-
+        
+        
     def load_mic(self):
         path = filedialog.askopenfilename()
+        self.insert_microcommands(path)
+        
+    def insert_microcommands(self,path):
         f = open(path)
         code = f.readlines()
         f.close()
-        
-        
         for l in code:
             v = l.rstrip('\n').lstrip(' ').rstrip(' ').split(":")
             if v[1] != '' and v[1] != " ":
@@ -937,7 +955,7 @@ class CPU:
         else:
             B=0    
         if state["inva"]:
-            A = ~A
+            A = ~A & 4294967295
         if state["f0"] == 0:
             if state["f1"] == 1:
                 erg = A | B
@@ -946,9 +964,9 @@ class CPU:
 
         else:
             if state["f1"] == 0:
-                erg = ~B
+                erg = ~B & 4294967295
             else:
-                erg = A + B
+                erg = (A + B) & 4294967295
         if state["inc"]:
             erg = erg + 1
             
@@ -1131,7 +1149,7 @@ class screen:
         #self.canvas.create_rectangle(590,390,600,400,fill="red")         
     def key_pressed(self,event):
         char = event.char
-        self.__memory.set_char()
+        self.__memory.set_char(char)
         if len(char) > 0:
             print("Taste gedruckt: " + str(ord(char)))
         
