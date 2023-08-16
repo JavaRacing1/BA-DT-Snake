@@ -205,7 +205,6 @@ class maschine:
         value = self.__ram[0]
         v1 = value >> 8
         v2 = value & 255
-        print(addr, value, v1, v2)
 
         if addr > 4095:
             self.__display[addr - 4096] = v1
@@ -218,7 +217,7 @@ class maschine:
 
     def push(self, value: int):
         for i in range(510, -1, -1):
-            if self.__ram[i] != 0:
+            if i <= 10:
                 self.__save_byte(i + 1, self.__ram[i])
         self.__save_byte(0, value)
 

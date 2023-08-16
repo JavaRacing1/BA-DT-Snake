@@ -11,109 +11,9 @@ def loop_init(widget: tk.Tk, __machine: maschine):
     machine = __machine
 
     global delay
-    delay = 4000
+    delay = 2000
 
     #Einmaliger Code hier hin
-
-    machine.load_memory("./icons_spielfeld/test_icons.txt")
-
-    machine.push(512)
-    machine.dload8()
-    machine.push(3584 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(513)
-    machine.dload8()
-    machine.push(3585 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(514)
-    machine.dload8()
-    machine.push(3586 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(515)
-    machine.dload8()
-    machine.push(3587 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(516)
-    machine.dload8()
-    machine.push(3588 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(517)
-    machine.dload8()
-    machine.push(3589 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(518)
-    machine.dload8()
-    machine.push(3590 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(519)
-    machine.dload8()
-    machine.push(3591 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-
-    machine.push(520)
-    machine.dload8()
-    machine.push(3592 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(521)
-    machine.dload8()
-    machine.push(3593 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(522)
-    machine.dload8()
-    machine.push(3594 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(523)
-    machine.dload8()
-    machine.push(3595 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(524)
-    machine.dload8()
-    machine.push(3596 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(525)
-    machine.dload8()
-    machine.push(3597 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(526)
-    machine.dload8()
-    machine.push(3598 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
-    machine.push(527)
-    machine.dload8()
-    machine.push(3599 + 512 + 240*3 + 8*6)
-    machine.dstore()
-    machine.pop()
-
 
 
     #Adresse Kopf speichern
@@ -394,28 +294,6 @@ def anzeige():
         machine.dstore16()
         machine.pop()
 
-        #Prüfen, ob außerhalb der Schlange
-        # machine.push(2)
-        # machine.push(558)
-        # machine.dload16()
-        # machine.sub()
-        # machine.dload16()
-        # machine.push(0)
-        # if (machine.jmc()):
-        #     machine.pop()
-        #     machine.pop()
-        #     machine.push(0)
-        #     machine.push(2)
-        #     machine.push(558)
-        #     machine.dload16()
-        #     machine.sub()
-        #     machine.dstore16()
-        #     machine.pop()
-
-        #     break
-        # machine.pop()
-        # machine.pop()
-
         #Alten Schwanz mit Nullen füllen
         machine.push(558)
         machine.dload16()
@@ -459,17 +337,6 @@ def anzeige():
             machine.dstore16()
             machine.pop()
 
-
-
-            # machine.push(558)
-            # machine.dload16()
-            # machine.dstore16()
-            # machine.pop()
-
-            # machine.push(1000)
-            # machine.push(556)
-            # machine.dstore16()
-            # machine.pop()
             break
         machine.pop()
         machine.pop()
@@ -484,20 +351,6 @@ def anzeige():
             break
         machine.pop()
         machine.pop()
-        
-        #Prüfen, ob neue Adresse 0 enthält
-        # machine.push(558)
-        # machine.dload16()
-        # machine.dload16()
-        # machine.push(0)
-
-        # if (machine.jmc()):
-        #     machine.pop()
-        #     machine.pop()
-        #     break
-        
-        # machine.pop()
-        # machine.pop()
 
 
 def kopf_zu_koerper():
