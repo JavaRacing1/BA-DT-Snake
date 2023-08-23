@@ -14,3 +14,8 @@ horizontale Änderung: 546 -> 561
 
 
 
+0-1: Bitmuster Kopf
+2-3: Bitmuster Körper
+4-5: Bitmuster Rand
+6-7: Bitmuster Frucht
+10: 
