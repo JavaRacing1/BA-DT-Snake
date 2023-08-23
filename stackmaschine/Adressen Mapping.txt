@@ -1,0 +1,16 @@
+Bitmuster Kopf: 499-506 -> 512-519
+Bitmuster Körper: 507-514 -> 520-527
+Bildschirm Kopf: 515,516 -> 528,529
+Bildschirm 1. Körper: 517,518 -> 530,531
+--> usw. bis 536 -> 549
+
+1. Hilfsadresse: 540, 541 -> 552, 553
+2. Hilfsadresse: 542, 543 -> 554, 555
+3. Hilfsadresse für Bitmuster: 498 -> 556
+4. Hilfsadresse für Körper: 497 -> 558
+5. Hilfsadresse für Eingabe -> 562
+vertikale Änderung: 545 -> 560
+horizontale Änderung: 546 -> 561
+
+
+
