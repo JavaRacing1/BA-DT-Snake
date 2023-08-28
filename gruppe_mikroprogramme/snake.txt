@@ -41,7 +41,7 @@
 1136:0xFF
 1137:0x0F
 
-2048: push
+2048: push              #Wert der Kopfadresse in 1. Hilfsvariable speichern
 2049: 0x0A
 2050: dload
 2051: push
@@ -49,14 +49,14 @@
 2053: dstore
 2054: pop
 
-2055: push
+2055: push              #1. Körperteiladresse in 4. Hilfsvariable speichern
 2056: 0x0B
 2057: push
 2058: 0x1A
 2059: dstore
 2060: pop
 
-2061: push
+2061: push              #Eingabe laden
 2062: 0x1C
 2063: dload
 2064: dload
@@ -64,22 +64,22 @@
 2066: push
 2067: 0x73
 2068: jmc                ###Sprung nach unten
-2069: 
-2070: 
+2069: 0x08
+2070: 0x48
 2071: pop
 
 2072: push
 2073: 0x77
 2074: jmc                ###Sprung nach oben
-2075: 
-2076:
+2075: 0x08
+2076: 0x63
 2077: pop
 
 2078: push
 2079: 0x61
 2080: jmc                ###Sprung nach links
-2081:
-2082:
+2081: 0x08
+2082: 0x7E
 2083: pop
 
 2084: push
@@ -90,7 +90,7 @@
 2089: pop
 2090: pop
 
-2091: push
+2091: push               #Eingabe mit zwischengespeicherter Eingabe erstezen
 2092: 0x1B
 2093: dload
 2094: push
@@ -99,6 +99,118 @@
 2097: dstore
 2098: pop
 
-2099: goto
+2099: goto              #Schleife neustarten
 2100: 0x00
 2101: 0x08
+
+2120: pop               #Bewegung nach unten
+2121: pop
+2122: goto 
+2123:
+2124:
+2125: push              #Kopfadresse laden
+2126: 0x0A
+2127: dload
+2128: push              #Vertikale Änderung laden
+2129: 0x15
+2130: dload
+2131: add               #Neue Position berechnen und speichern
+2132: push
+2133: 0x0A
+2134: dstore
+2135: pop
+2136: push              #Eingabe zwischenspeichern
+2137: 0x1C
+2138: dload
+2139: dload
+2140: push
+2141: 0x1B
+2142: dstore
+2143: pop
+2144: goto
+2145: 
+2146:
+
+2147: pop               #Bewegung nach oben
+2148: pop
+2149: goto 
+2150:
+2151:
+2152: push              #Kopfadresse laden
+2153: 0x0A
+2154: dload
+2155: push              #Vertikale Änderung laden
+2156: 0x15
+2157: dload
+2158: sub               #Neue Position berechnen und speichern
+2159: push
+2160: 0x0A
+2161: dstore
+2162: pop
+2163: push              #Eingabe zwischenspeichern
+2164: 0x1C
+2165: dload
+2166: dload
+2167: push
+2168: 0x1B
+2169: dstore
+2170: pop
+2171: goto
+2172: 
+2173:
+
+2174: pop               #Bewegung nach links
+2175: pop
+2176: goto 
+2177:
+2178:
+2179: push              #Kopfadresse laden
+2180: 0x0A
+2181: dload
+2182: push              #Horizontale Änderung laden
+2183: 0x16
+2184: dload
+2185: sub               #Neue Position berechnen und speichern
+2186: push
+2187: 0x0A
+2188: dstore
+2189: pop
+2190: push              #Eingabe zwischenspeichern
+2191: 0x1C
+2192: dload
+2193: dload
+2194: push
+2195: 0x1B
+2196: dstore
+2197: pop
+2198: goto
+2199: 
+2200:
+
+2201: pop               #Bewegung nach rechts
+2202: pop
+2203: goto 
+2204:
+2205:
+2206: push              #Kopfadresse laden
+2207: 0x0A
+2208: dload
+2209: push              #Horizontale Änderung laden
+2210: 0x16
+2211: dload
+2212: add               #Neue Position berechnen und speichern
+2213: push
+2214: 0x0A
+2215: dstore
+2216: pop
+2217: push              #Eingabe zwischenspeichern
+2218: 0x1C
+2219: dload
+2220: dload
+2221: push
+2222: 0x1B
+2223: dstore
+2224: pop
+2225: goto
+2226: 
+2227:

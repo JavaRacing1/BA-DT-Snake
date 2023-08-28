@@ -14,8 +14,24 @@ horizontale Änderung: 546 -> 561
 
 
 
-0-1: Bitmuster Kopf
-2-3: Bitmuster Körper
-4-5: Bitmuster Rand
-6-7: Bitmuster Frucht
-10: 
+Adresse 0: 1. Teil des Kopfbitmusters, da 64 Bit groß (wird mit der Zahl 1010991525 vorinitialisiert)
+Adresse 1: 2. Teil des Kopfbitmusters (wird mit der Zahl  vorinitialisiert)
+Adresse 2: 1. Teil des Körpermusters (wird mit der Zahl  vorinitialisiert)
+Adresse 3: 2.Teil des Körperbitmusters (wird mit der Zahl  vorinitialisiert)
+Adresse 4: 1.Teil des Bitmusters für Randblock (wird mit der Zahl  vorinitialisiert)
+Adresse 5: 2.Teil des Bitmusters für Randblock (wird mit der Zahl  vorinitialisiert)
+Adresse 6: 1.Teil des Bitmusters der Frucht (wird mit der Zahl  vorinitialisiert)
+Adresse 7: 2.Teil des Bitmusters der Frucht (wird mit der Zahl  vorinitialisiert)
+Adressen 8 und 9 zur Reserve
+Adresse 10: Bildschirmposition des Kopfes (wird mit der Zahl 6360  vorinitialisiert)
+Adresse 11: Bildschirmposition des 1.Körperteils (wird mit der Zahl 6368  vorinitialisiert)
+Adresse 12-20: Adressen der restlichen Körperteile
+Adresse 21: Wert der vertikalen Bildschirmadressänderungen (wird mit der Zahl 240  vorinitialisiert)
+Adresse 22: Wert der horizontalen Bildschirmadressänderung (wird mit der Zahl  8 vorinitialisiert)
+Adresse 23: 1.Hilfsvariable speichert erste alte Segmentadresse zwischen
+Adresse 24: 2.Hilfsvariable speichert zweite alte Segmentadresse zwischen (wird mit der Zahl 6376 vorinitialisiert)
+Adresse 25: 3.Hilfsvariable, ist Zeiger auf Adressen der Bitmuster
+Adresse 26: 4.Hilfsvariable, ist Zeiger auf Bildschirmpositionen
+Adresse 27: 5. Hilfsvariable, speichert letzten, gültigen ASCII Wert bei falscher Eingabe zwischen
+Adresse 28: 6. Hilfsvariable, speichert die ADresse, welche die ASCII Eingabe für die Richtungsänderung enthält (wird mit der Zahl 4095 vorinitialisiert)
+
