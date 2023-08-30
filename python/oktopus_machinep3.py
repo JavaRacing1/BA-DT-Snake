@@ -39,7 +39,7 @@ class mainstorage:
         self.console = screen(self)
 
     def set_char(self,c):
-        self.__input_buffer = c
+        self.__input_buffer = ord(c)
         self.__input_read_flag = 1
 
     def reset_history_read_byte(self):

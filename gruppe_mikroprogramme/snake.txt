@@ -38,8 +38,8 @@
 1112:0x08
 1120:0xE8
 1121:0x18
-1136:0xFF
-1137:0x0F
+1136:0x00
+1137:0x03
 
 2048: push              #Wert der Kopfadresse in 1. Hilfsvariable speichern
 2049: 0x0A
@@ -85,8 +85,8 @@
 2084: push
 2085: 0x64
 2086: jmc                ###Sprung nach rechts
-2087: 
-2088: 
+2087: 0x08
+2088: 0x99
 2089: pop
 2090: pop
 
@@ -100,14 +100,14 @@
 2098: pop
 
 2099: goto              #Schleife neustarten
-2100: 0x00
-2101: 0x08
+2100: 0x08
+2101: 0x00
 
 2120: pop               #Bewegung nach unten
 2121: pop
 2122: goto 
-2123:
-2124:
+2123: 0x09
+2124: 0x06
 2125: push              #Kopfadresse laden
 2126: 0x0A
 2127: dload
@@ -128,14 +128,14 @@
 2142: dstore
 2143: pop
 2144: goto
-2145: 
-2146:
+2145: 0x09
+2146: 0x1A
 
 2147: pop               #Bewegung nach oben
 2148: pop
 2149: goto 
-2150:
-2151:
+2150: 0x09
+2151: 0x2E
 2152: push              #Kopfadresse laden
 2153: 0x0A
 2154: dload
@@ -156,14 +156,14 @@
 2169: dstore
 2170: pop
 2171: goto
-2172: 
-2173:
+2172: 0x09
+2173: 0x42
 
 2174: pop               #Bewegung nach links
 2175: pop
 2176: goto 
-2177:
-2178:
+2177: 0x09
+2178: 0x56
 2179: push              #Kopfadresse laden
 2180: 0x0A
 2181: dload
@@ -184,14 +184,14 @@
 2196: dstore
 2197: pop
 2198: goto
-2199: 
-2200:
+2199: 0x09
+2200: 0x6A
 
 2201: pop               #Bewegung nach rechts
 2202: pop
 2203: goto 
-2204:
-2205:
+2204: 0x09
+2205: 0x7E
 2206: push              #Kopfadresse laden
 2207: 0x0A
 2208: dload
@@ -212,5 +212,226 @@
 2223: dstore
 2224: pop
 2225: goto
-2226: 
-2227:
+2226: 0x09
+2227: 0x92
+
+2240: push              # Körperteile nachziehen -> 4. Hilfsvariable laden
+2241: 0x1A
+2242: dload
+2243: dload
+2244: push              #Wert in 2. Hilfsvariable speichern
+2245: 0x18
+2246: dstore
+2247: pop
+2248: push              #Wert aus 1. Hilfsvariable laden
+2249: 0x17
+2250: dload
+2251: push              #Körperelement bekommt alte Körperadresse
+2252: 0x1A
+2253: dload
+2254: dstore
+2255: pop
+2256: push              #Wert der 2. Hilfsvariable laden
+2257: 0x18
+2258: dload
+2259: push              #1. Hilfsvariable bekommt Wert der 2. Hilfsvariable
+2260: 0x17
+2261: dstore
+2262: pop
+2263: push              #Wert der 4. Hilfsvariable laden
+2264: 0x1A
+2265: dload
+2266: push              #Neue Körperadresse berechnen und in 4. Hilfsvariable speichern
+2267: 0x01
+2268: add
+2269: push
+2270: 0x1A
+2271: dstore
+2272: pop
+2273: push              #Prüfen, ob außerhalb des Körperteil-Speichers
+2274: 0x1A
+2275: dload
+2276: push
+2277: 0x15
+2278: jmc               #Sprung zur Anzeige
+2279: 0x09
+2280: 0xC4
+2281: pop
+2282: pop
+2283: push              #Prüfen, ob neue Adresse 0 enthält
+2284: 0x1A
+2285: dload
+2286: dload
+2287: push
+2288: 0x00
+2289: jmc               #Sprung zur Anzeige
+2290: 0x09
+2291: 0xC4
+2292: pop
+2293: pop
+2294: goto              #Wiederholen
+2295: 0x08
+2296: 0xC0
+
+2310:                   #DJ - Bewegung nach Unten - Teil1           
+2327: goto
+2328: 0x08
+2329: 0x4D
+
+2330:                   #DJ - Bewegung nach Unten - Teil2 
+2347: goto
+2348: 0x08
+2349: 0xC0
+
+2350:                   #DJ - Bewegung nach Oben - Teil1 
+2367: goto
+2368: 0x08
+2369: 0x68
+
+2370:                    #DJ - Bewegung nach Oben - Teil2 
+2387: goto
+2388: 0x08
+2389: 0xC0
+
+2390:                    #DJ - Bewegung nach links - Teil1
+2407: goto
+2408: 0x08
+2409: 0x83
+
+2410:                    #DJ - Bewegung nach links - Teil2
+2427: goto
+2428: 0x08
+2429: 0xC0
+
+2430:                    #DJ - Bewegung nach rechts - Teil1
+2447: goto
+2448: 0x08
+2449: 0x9E
+
+2450:                    #DJ - Bewegung nach rechts - Teil2
+2467: goto
+2468: 0x08
+2469: 0xC0
+
+2500: pop
+2501: pop
+2502: push              #Adresse des Bitmusters speichern
+2503: 0x00
+2504: push
+2505: 0x19
+2506: dstore
+2507: pop
+2508: push               #Adresse des Kopfes speichern
+2509: 0x0A
+2510: push
+2511: 0x1A
+2512: dstore
+2513: pop
+
+2514: push              #Ersten Teil des Bitmusters laden
+2515: 0x19
+2516: dload
+2517: dload
+2518: push              #Adresse des Körperteils laden
+2519: 0x1A
+2520: dload
+2521: dload
+2522: dstore            #Erster Teil wird in Bildschirm geladen
+2523: pop
+2524: push              #Bitmusteradresse wird erhöht
+2525: 0x19
+2526: dload
+2527: inc
+2528: dload             #2. Teil des Bitmusters geladen
+2529: push              #Adresse des Körperteils laden + erhöht
+2530: 0x1A
+2531: dload
+2532: dload
+2533: push
+2534: 0x04
+2535: add
+2536: dstore             #Zweiter Teil wird in Bildschirm geladen
+2537: pop
+2538: push               #Prüfen, ob Bitmuster noch auf Kopf ist
+2539: 0x19
+2540: dload
+2541: push
+2542: 0x00
+2543: jmc               #Bitmuster auf Körper ändern
+2544: 0x0A
+2545: 0x28
+2546: pop
+2547: pop
+2548: push              #Körperadresse um 2 erhöhen -> nächstes Körperteil
+2549: 0x1A
+2550: dload
+2551: inc
+2552: push              #Neue Körperadresse speichern
+2553: 0x1A
+2554: dstore
+2555: pop
+2556: push              #Prüfen, ob auf Adresse vom alten Schwanz
+2557: 0x1A
+2558: dload
+2559: dload
+2560: push
+2561: 0x00
+2562: jmc               #Ende erreicht + Alten Schwanz mit Nullen füllen
+2563: 0x0A
+2564: 0x33
+2565: pop
+2566: pop
+2567: push              #Prüfen, ob außerhalb des Körperteil-Speichers
+2568: 0x1A
+2569: dload
+2570: push
+2571: 0x15
+2572: jmc
+2573: 0x0A
+2574: 0x50
+2575: pop
+2576: pop
+2577: goto              #Wiederholen
+2578: 0x09
+2579: 0xD2
+
+2600: pop
+2601: pop
+2602: push              #Bitmuster von Kopf zu Körper wechseln
+2603: 0x02
+2604: push
+2605: 0x19
+2606: dstore
+2607: pop
+2608: goto
+2609: 0x09
+2610: 0xF4
+
+2611: pop
+2612: pop
+2613: push              #Adresse des alten Schwanzes laden
+2614: 0x18
+2615: dload
+2616: dup               #1. Teil des alten Schwanzes überschreiben
+2617: push
+2618: 0x00
+2619: swap
+2620: dstore
+2621: pop
+2622: push              #2. Teil des alten Schwanzes überschreiben
+2623: 0x04
+2624: add
+2625: push
+2626: 0x00
+2627: swap
+2628: dstore
+2629: pop
+2630: goto
+2631: 0x08
+2632: 0x00
+
+2640: pop
+2641: pop
+2642: goto
+2643: 0x08
+2644: 0x00
