@@ -30,12 +30,12 @@
 1053:0x7e
 1054:0x3c
 1055:0x0
-1064:0xD8
-1065:0x18
-1068:0xE0
-1069:0x18
-1108:0xF0
-1112:0x08
+1064:0x76
+1065:0x05
+1068:0x78
+1069:0x05
+1108:0x3C
+1112:0x02
 1120:0xE8
 1121:0x18
 1136:0x00
@@ -348,7 +348,7 @@
 2531: dload
 2532: dload
 2533: push
-2534: 0x04
+2534: 0x01
 2535: add
 2536: dstore             #Zweiter Teil wird in Bildschirm geladen
 2537: pop
@@ -419,7 +419,7 @@
 2620: dstore
 2621: pop
 2622: push              #2. Teil des alten Schwanzes überschreiben
-2623: 0x04
+2623: 0x01
 2624: add
 2625: push
 2626: 0x00
