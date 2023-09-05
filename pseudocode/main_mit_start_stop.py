@@ -5,7 +5,7 @@ schlange_segmente_beginn = 3 # Startsegmente
 anzahl_fruechte = 0 #Anzahl Körperteile abhängig durch eingesammelte Früchte
 anzahl_koerper_max = 8 # maximale Länge == Sieg --> AnzahlFrüchte == 5 bedeutet auch Sieg
 abstand_horizontal = 15 # von Mitte zum linken Rand --> wenn == 0 oder == 29 Niederlage
-abstand_vertikal = 11  # von Mitte zum oberern Rand --> wenn == 0 oder == 19 Niederlage
+abstand_vertikal = 10  # von Mitte zum oberern Rand --> wenn == 0 oder == 19 Niederlage
 zustand_spiel = 0 # für Auswertung ob Sieg bleibt ZustandSpiel gleich 0 oder ZustandSpiel wird durch einen der eintretenden Niederlagenfälle größer 0 verändert
 
 #Speicheradressen der Früchte (5 Früchte vorplatziert, aber immer nur eine aktiv)
