@@ -503,6 +503,136 @@
 2643: 0x08
 2644: 0x00
 
+2650: push            #Vergleich Kopf Segmente Schlange, beginnt mit Segment 3, geht bis zehntes Segment
+2651: 0x0A            #Bildschirmposition Kopf
+2652: dload
+2653: push
+2654: 0x0D            #Bildschirmadresse Segment 3 
+2655: dload
+2656: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2657:
+2658:
+2659: pop
+2660: push
+2661: 0x0E            #Bildschirmadresse Segment 4 
+2662: dload
+2663: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2664:
+2665:
+2666: pop
+2667: push
+2668: 0x0F            #Bildschirmadresse Segment 5 
+2669: dload
+2670: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2671:
+2672:
+2673: pop
+2674: push
+2675: 0x10            #Bildschirmadresse Segment 6
+2676: dload
+2677: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2678:
+2679:
+2680: pop
+2681: push
+2682: 0x11            #Bildschirmadresse Segment 7 
+2683: dload
+2684: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2685:
+2686:
+2687: pop
+2688: push
+2689: 0x12            #Bildschirmadresse Segment 8 
+2690: dload
+2691: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2692:
+2693:
+2694: pop
+2695: push
+2696: 0x13            #Bildschirmadresse Segment 9 
+2697: dload
+2698: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2699:
+2700:
+2701: pop
+2702: push
+2703: 0x14            #Bildschirmadresse Segment 10 
+2704: dload
+2705: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2706:
+2707:
+2708: pop
+2709: push            #Beginn Vergleich Kopf Frucht, 8 Früchte für Spiel, Frucht 1 vorinitialisert durch Spielstart
+2710: 0x26
+2711: dload
+2712: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2713:
+2714:
+2715: pop
+2716: push            #Laden Frucht 2
+2717: 0x27
+2718: dload
+2719: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2720:
+2721:
+2722: pop
+2723: push            #Laden Frucht 3
+2724: 0x28
+2725: dload
+2726: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2728:
+2729:
+2730: pop
+2731: push            #Laden Frucht 4
+2732: 0x29
+2733: dload
+2734: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2735:
+2736:
+2737: pop
+2738: push            #Laden Frucht 5
+2739: 0x2A
+2740: dload
+2741: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2742:
+2743:
+2744: pop
+2745: push            #Laden Frucht 6
+2746: 0x2B
+2747: dload
+2748: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2749:
+2750:
+2751: pop
+2752: push            #Laden Frucht 7
+2753: 0x2C
+2754: dload
+2755: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2756:
+2757:
+2758: pop
+2759: push            #Laden Frucht 8
+2760: 0x2D
+2761: dload
+2762: jmc             #Vergleich, True-Fall zu Code SiegScreenLaden gehen
+2763:
+2764:
+2765: pop
+2766: pop
+2767: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
+2768: 0x1F
+2769: inc
+2770: dstore
+2771: pop
+2772: goto
+2773:
+2774:
+
+
+
+
+
+
 6616:0x3c
 6617:0x42
 6618:0x81
