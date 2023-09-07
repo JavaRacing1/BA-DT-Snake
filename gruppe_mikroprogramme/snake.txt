@@ -296,7 +296,7 @@
 2319: pop
 2320: pop
 2327: goto
-2328: 0x08
+2328: 0x08              
 2329: 0x4D
 
 2330: push              #Anpassen Hilfsvariable vertikale Adresse
@@ -305,8 +305,8 @@
 2333: dstore
 2334: pop
 2347: goto
-2348: 0x08
-2349: 0xC0
+2348: 0x0A              #0A5A = Adresse 2650 = zweite Niederlagenbedingung + Kontrolle AnzahlFrucht (Siegbedingung)
+2349: 0x5A
 
 2350: push              #Abstandvergleich Kopf Rand oben - Hilfvariable vertikale Adresse  
 2351: 0x1D
@@ -329,8 +329,8 @@
 2373: dstore
 2374: pop
 2387: goto
-2388: 0x08
-2389: 0xC0
+2388: 0x0A
+2389: 0x5A
 
 2390: push              #Abstandvergleich Kopf Rand links - Hilfvariable horizontale Adresse
 2391: 0x1E
@@ -353,8 +353,8 @@
 2413: dstore
 2414: pop
 2427: goto
-2428: 0x08
-2429: 0xC0
+2428: 0x0A
+2429: 0x5A
 
 2430: push              #Abstandvergleich Kopf Rand rechts - Hilfvariable horizontale Adresse
 2431: 0x1E
@@ -377,8 +377,8 @@
 2453: dstore
 2454: pop
 2467: goto
-2468: 0x08
-2469: 0xC0
+2468: 0x0A
+2469: 0x5A
 
 2500: pop
 2501: pop
@@ -626,8 +626,8 @@
 2770: dstore
 2771: pop
 2772: goto
-2773:
-2774:
+2773: 0x08          #08C0 = Adresse 2240 = Nachziehen Körpersegmente (zweiter Schritt Bewegung, vor Anpassung Console)
+2774: 0xC0
 
 2780:               #RandsteinBegrenzung erzeugen für Sieg/Niederlagen Screens
 
