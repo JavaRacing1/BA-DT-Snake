@@ -284,42 +284,98 @@
 2295: 0x08
 2296: 0xC0
 
-2310:                   #DJ - Bewegung nach Unten - Teil1           
+2310: push              #Abstandvergleich Kopf Rand unten - Hilfvariable vertikale Adresse 
+2311: 0x1D
+2312: dload 
+2313: push              #Hilfvariable Rand unten
+2314: 0x23
+2315: dload
+2316: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2317:
+2318:
+2319: pop
+2320: pop
 2327: goto
 2328: 0x08
 2329: 0x4D
 
-2330:                   #DJ - Bewegung nach Unten - Teil2 
+2330: push              #Anpassen Hilfsvariable vertikale Adresse
+2331: 0x1D
+2332: inc               #Wert um 1 erhöhen
+2333: dstore
+2334: pop
 2347: goto
 2348: 0x08
 2349: 0xC0
 
-2350:                   #DJ - Bewegung nach Oben - Teil1 
+2350: push              #Abstandvergleich Kopf Rand oben - Hilfvariable vertikale Adresse  
+2351: 0x1D
+2352: dload 
+2353: push              #Hilfvariable Rand oben/links
+2354: 0x22
+2355: dload
+2356: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2357:
+2358:
+2359: pop
+2360: pop
 2367: goto
 2368: 0x08
 2369: 0x68
 
-2370:                    #DJ - Bewegung nach Oben - Teil2 
+2370: push              #Anpassen Hilfsvariable vertikale Adresse
+2371: 0x1D
+2372: dec               #Wert um 1 verringern
+2373: dstore
+2374: pop
 2387: goto
 2388: 0x08
 2389: 0xC0
 
-2390:                    #DJ - Bewegung nach links - Teil1
+2390: push              #Abstandvergleich Kopf Rand links - Hilfvariable horizontale Adresse
+2391: 0x1E
+2392: dload 
+2393: push              #Hilfvariable Rand oben/links
+2394: 0x22
+2395: dload
+2396: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2397:
+2398:
+2399: pop
+2400: pop
 2407: goto
 2408: 0x08
 2409: 0x83
 
-2410:                    #DJ - Bewegung nach links - Teil2
+2410: push              #Anpassen Hilfsvariable horizontale Adresse
+2411: 0x1E
+2412: dec               #Wert um 1 verringern
+2413: dstore
+2414: pop
 2427: goto
 2428: 0x08
 2429: 0xC0
 
-2430:                    #DJ - Bewegung nach rechts - Teil1
+2430: push              #Abstandvergleich Kopf Rand rechts - Hilfvariable horizontale Adresse
+2431: 0x1E
+2432: dload 
+2433: push              #Hilfvariable Rand oben/links
+2434: 0x24
+2435: dload
+2436: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
+2437:
+2438:
+2439: pop
+2440: pop
 2447: goto
 2448: 0x08
 2449: 0x9E
 
-2450:                    #DJ - Bewegung nach rechts - Teil2
+2450: push              #Anpassen Hilfsvariable horizontale Adresse
+2451: 0x1E
+2452: inc               #Wert um 1 erhöhen
+2453: dstore
+2454: pop
 2467: goto
 2468: 0x08
 2469: 0xC0
