@@ -562,6 +562,7 @@
 2706:
 2707:
 2708: pop
+
 2709: push            #Beginn Vergleich Kopf Frucht, 8 Früchte für Spiel, Frucht 1 vorinitialisert durch Spielstart
 2710: 0x26
 2711: dload
@@ -627,6 +628,8 @@
 2772: goto
 2773:
 2774:
+
+2780:               #RandsteinBegrenzung erzeugen für Sieg/Niederlagen Screens
 
 
 
