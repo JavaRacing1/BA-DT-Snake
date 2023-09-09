@@ -38,8 +38,23 @@
 1112:0x02
 1120:0xE8
 1121:0x18
+1140:0x0B
+1144:0x10
+1148:0x00
+1160:0x00
+1164:0x13
+1168:0x1D
 1172:0x00
 1173:0x03
+1176
+1180
+1184
+1188
+1192
+1196
+1200
+1204
+
 
 2048: goto              #Nutzereingabe zwischenspeichern
 2049: 0x08
@@ -291,8 +306,8 @@
 2314: 0x23
 2315: dload
 2316: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2317:
-2318:
+2317: 0x0A
+2318: 0xDC
 2319: pop
 2320: pop
 2327: goto
@@ -301,9 +316,12 @@
 
 2330: push              #Anpassen Hilfsvariable vertikale Adresse
 2331: 0x1D
-2332: inc               #Wert um 1 erhöhen
-2333: dstore
-2334: pop
+2332: dload
+2333: inc               #Wert um 1 erhöhen
+2334: push
+2335: 0x1D
+2336: dstore
+2337: pop
 2347: goto
 2348: 0x0A              #0A5A = Adresse 2650 = zweite Niederlagenbedingung + Kontrolle AnzahlFrucht (Siegbedingung)
 2349: 0x5A
@@ -315,8 +333,8 @@
 2354: 0x22
 2355: dload
 2356: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2357:
-2358:
+2357: 0x0A
+2358: 0xDC
 2359: pop
 2360: pop
 2367: goto
@@ -325,9 +343,12 @@
 
 2370: push              #Anpassen Hilfsvariable vertikale Adresse
 2371: 0x1D
-2372: dec               #Wert um 1 verringern
-2373: dstore
-2374: pop
+2372: dload
+2373: dec               #Wert um 1 verringern
+2374: push
+2375: 0x1D
+2376: dstore
+2377: pop
 2387: goto
 2388: 0x0A
 2389: 0x5A
@@ -339,8 +360,8 @@
 2394: 0x22
 2395: dload
 2396: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2397:
-2398:
+2397: 0x0A
+2398: 0xDC
 2399: pop
 2400: pop
 2407: goto
@@ -349,9 +370,12 @@
 
 2410: push              #Anpassen Hilfsvariable horizontale Adresse
 2411: 0x1E
-2412: dec               #Wert um 1 verringern
-2413: dstore
-2414: pop
+2412: dload
+2413: dec               #Wert um 1 verringern
+2414: push
+2415: 0x1E
+2416: dstore
+2417: pop
 2427: goto
 2428: 0x0A
 2429: 0x5A
@@ -363,8 +387,8 @@
 2434: 0x24
 2435: dload
 2436: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2437:
-2438:
+2437: 0x0A
+2438: 0xDC
 2439: pop
 2440: pop
 2447: goto
@@ -373,9 +397,12 @@
 
 2450: push              #Anpassen Hilfsvariable horizontale Adresse
 2451: 0x1E
-2452: inc               #Wert um 1 erhöhen
-2453: dstore
-2454: pop
+2452: dload
+2453: inc               #Wert um 1 erhöhen
+2454: push
+2455: 0x1E
+2456: dstore
+2457: pop
 2467: goto
 2468: 0x0A
 2469: 0x5A
@@ -622,14 +649,33 @@
 2766: pop
 2767: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
 2768: 0x1F
-2769: inc
-2770: dstore
-2771: pop
-2772: goto
-2773: 0x08          #08C0 = Adresse 2240 = Nachziehen Körpersegmente (zweiter Schritt Bewegung, vor Anpassung Console)
-2774: 0xC0
-
-2780:               #Endscreen für Niederlage
+2769: dload
+2770: inc
+2771: push
+2772: 0x1F
+2773: dstore
+2774: pop
+2775: goto
+2776: 0x08          #08C0 = Adresse 2240 = Nachziehen Körpersegmente (zweiter Schritt Bewegung, vor Anpassung Console)
+2777: 0xC0
+                    #NiederlagenScreen (Adressen 2780 bis 2787 ist ein Randiconoberteil)
+2780: push              
+2781: 0x04
+2782: dload
+2783: push  
+2784: 0x04
+2785: 0x00
+2786: dstore
+2787: pop
+2788: push              
+2789: 0x05
+2790: dload
+2791: push  
+2792: 0x04
+2793: 0x01
+2794: dstore
+2795: pop
+                  #das ist ein Randicon, das jetzt noch 95 mal
 
 4097:0x7e           #Startbildschirm (wird generiert durch laden von "snake_memory.txt"), mit allen Ränder (Adressen 4097 bis 8849 ohne Kopf und Segment), Schlangenkopf (Adressen 6616 bis 6623) und einem Segment (Adressen 6624 bis 6631)
 4098:0x7e
@@ -1207,15 +1253,15 @@
 8892:0x7e
 8893:0x7e
 8894:0x7e
-6616:0x3c
-6617:0x42
+6616:0x3c               #Adressen Schlangenkopf
+6617:0x42             
 6618:0x81
 6619:0xa5
 6620:0xa5
 6621:0x81
 6622:0x42
 6623:0x3c
-6624:0x3c
+6624:0x3c              #Adressen erstes Segment
 6625:0x42
 6626:0x81
 6627:0x81
@@ -1223,5 +1269,6 @@
 6629:0x81
 6630:0x42
 6631:0x3c
+
 
 
