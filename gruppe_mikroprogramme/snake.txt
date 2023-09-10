@@ -41,16 +41,33 @@
 1140:0x0B
 1144:0x10
 1148:0x00
+1152:0x00        #Adresse 32 aktueller Spielzustand
+1156:0x08        #Adresse 33 maximale Früchte
 1160:0x00
 1164:0x13
 1168:0x1D
 1172:0x00
 1173:0x03
-1176:0x3E
+1176:0x3E        #Hilfsadresse erste Frucht (zweier Bölcke)
 1177:0x06
-
-
-
+1180:0xBA
+1181:0x03
+1184:0x94
+1185:0x03
+1188:0x62
+1189:0x04
+1192:0x04
+1193:0x07
+1196:0x2E
+1197:0x05
+1200:0x60
+1201:0x07
+1204:0x56
+1205:0x07
+1212:0x00          #Hilfsadress 47
+1216:0x01          #Hilfsadresse 48
+1228:0xC0          #Hilfsvariable Zeichnen screens
+1229:0x04
 
 2048: goto              #Nutzereingabe zwischenspeichern
 2049: 0x08
@@ -305,8 +322,8 @@
 2314: 0x23
 2315: dload
 2316: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2317: 0x0A
-2318: 0xDC
+2317: 0x0B
+2318: 0x38
 2319: pop
 2320: pop
 2327: goto
@@ -332,8 +349,8 @@
 2354: 0x22
 2355: dload
 2356: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2357: 0x0A
-2358: 0xDC
+2357: 0x0B
+2358: 0x38
 2359: pop
 2360: pop
 2367: goto
@@ -359,8 +376,8 @@
 2394: 0x22
 2395: dload
 2396: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2397: 0x0A
-2398: 0xDC
+2397: 0x0B
+2398: 0x38
 2399: pop
 2400: pop
 2407: goto
@@ -386,8 +403,8 @@
 2434: 0x24
 2435: dload
 2436: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2437: 0x0A
-2438: 0xDC
+2437: 0x0B
+2438: 0x38
 2439: pop
 2440: pop
 2447: goto
@@ -544,131 +561,117 @@
 2654: 0x0D            #Bildschirmadresse Segment 3 
 2655: dload
 2656: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2657:
-2658:
+2657: 0x0B
+2658: 0x38
 2659: pop
 2660: push
 2661: 0x0E            #Bildschirmadresse Segment 4 
 2662: dload
 2663: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2664:
-2665:
+2664: 0x0B
+2665: 0x38
 2666: pop
 2667: push
 2668: 0x0F            #Bildschirmadresse Segment 5 
 2669: dload
 2670: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2671:
-2672:
+2671: 0x0B
+2672: 0x38
 2673: pop
 2674: push
 2675: 0x10            #Bildschirmadresse Segment 6
 2676: dload
 2677: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2678:
-2679:
+2678: 0x0B 
+2679: 0x38
 2680: pop
 2681: push
 2682: 0x11            #Bildschirmadresse Segment 7 
 2683: dload
 2684: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2685:
-2686:
+2685: 0x0B
+2686: 0x38
 2687: pop
 2688: push
 2689: 0x12            #Bildschirmadresse Segment 8 
 2690: dload
 2691: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2692:
-2693:
+2692: 0x0B
+2693: 0x38
 2694: pop
 2695: push
 2696: 0x13            #Bildschirmadresse Segment 9 
 2697: dload
 2698: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2699:
-2700:
+2699: 0x0B
+2700: 0x38
 2701: pop
 2702: push
 2703: 0x14            #Bildschirmadresse Segment 10 
 2704: dload
 2705: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2706:
-2707:
+2706: 0x0B
+2707: 0x38
 2708: pop
 
 2709: push            #Beginn Vergleich Kopf Frucht, 8 Früchte für Spiel, Frucht 1 vorinitialisert durch Spielstart
 2710: 0x26
 2711: dload
 2712: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2713:
-2714:
+2713: 0x0B
+2714: 0x22
 2715: push
 2716: pop
 2716: push            #Laden Frucht 2
 2717: 0x27
 2718: dload
 2719: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2720:
-2721:
+2720: 0x0B
+2721: 0x22 
 2722: pop
 2723: push            #Laden Frucht 3
 2724: 0x28
 2725: dload
 2726: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2728:
-2729:
+2728: 0x0B
+2729: 0x22
 2730: pop
 2731: push            #Laden Frucht 4
 2732: 0x29
 2733: dload
 2734: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2735:
-2736:
+2735: 0x0B
+2736: 0x22 
 2737: pop
 2738: push            #Laden Frucht 5
 2739: 0x2A
 2740: dload
 2741: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2742:
-2743:
+2742: 0x0B
+2743: 0x22
 2744: pop
 2745: push            #Laden Frucht 6
 2746: 0x2B
 2747: dload
 2748: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2749:
-2750:
+2749: 0x0B
+2750: 0x22
 2751: pop
 2752: push            #Laden Frucht 7
 2753: 0x2C
 2754: dload
 2755: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2756:
-2757:
+2756: 0x0B
+2757: 0x22
 2758: pop
 2759: push            #Laden Frucht 8
 2760: 0x2D
 2761: dload
-2762: jmc             #Vergleich, True-Fall zu Code SiegScreenLaden gehen
-2763:
-2764:
+2762: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2763: 0x0B
+2764: 0x22
 2765: pop
 2766: pop
-
-
-2767: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
-2768: 0x1F
-2769: dload
-2770: inc
-2771: push
-2772: 0x1F
-2773: dstore
-2774: pop
-2775: goto
-2776: 0x08          #08C0 = Adresse 2240 = Nachziehen Körpersegmente (zweiter Schritt Bewegung, vor Anpassung Console)
-2777: 0xC0
-                    #NiederlagenScreen (Adressen 2780 bis 2787 ist ein Randiconoberteil)
 
 2778: pop
 2779: pop
@@ -736,6 +739,783 @@
 2841: goto
 2842: 0x08
 2843: 0x00
+
+2850: push           #Vergleich maximale Früchte mit aktuellen Früchten für Siegscreen laden
+2851: 0x21            #Hilfsvariable maximale Früchte
+2852: dload
+2853: push
+2854: 0x1F           #Hilfsvariable Zustand_sieg laden 
+2855: dload
+2856: jmc             #Vergleich, True-Fall Sieg, zum Code ScreenSieg gehen
+2857: 0x0C
+2858: 0xBF
+2859: pop
+2860: pop
+2861: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
+2862: 0x1F
+2863: dload
+2864: inc
+2865: push
+2866: 0x1F
+2867: dstore
+2868: pop
+2869: goto
+2870: 0x08
+2871: 0xC0
+
+2872: push    #Icon laden (Kriesfregment des vergößerten Schlangenkopfes) / NierlagenScreen
+2873: 0x04
+2874: dload 
+2875: goto    #goto um nicht in Startpunkt zu zeichnen (nächster Block ist für das Zeichnen der beiden Icon Teile)
+2876: 0x0B
+2877: 0x48
+
+2878: push
+2879: 0x33   #Adresse an Position x laden, beinhaltet Startpunkt des Victory/Niederlagenscreens (oberer Teil)
+2880: dload
+2881: dstore
+2882: push
+2883: 0x33    #Adresse an Position x laden + 1 (Unterer teil Icon)
+2884: dload
+2885: inc
+2886: dstore
+2887:return    #springt zur nächsten zeile nach letzten call
+
+2888: push    #Adresse an Position x um XX verschieben
+2889: 0x33    #Startpunkt fürs zeichnen
+2890: dload
+2891: push
+2892: 0x00    #Anzahl um wie viel Stellen nach links verschoben wird (wenn um eine Zeile nach unten = 1*60) ( x * 2 + y * 60 --> Ergebnis dann in hexa angeben ans Stelle XX)
+2893: add
+2894: push
+2895: 0x33
+2896: dstore   
+2897: call    #zum Zeichnen springen mit call
+2898: 0x0B
+2899: 0x3E    #das ist ein neues Icon (14/7)
+
+2900: push    #Icons-Niederlagen generieren
+2901: 0x33
+2902: dload
+2903: push
+2904: 0x2
+2905: add
+2906: push
+2907: 0x33
+2908: dstore
+2909: call
+2910: 0x0B
+2911: 0x3E
+2912: push
+2913: 0x33
+2914: dload
+2915: push
+2916: 0x2
+2917: add
+2918: push
+2919: 0x33
+2920: dstore
+2921: call
+2922: 0x0B
+2923: 0x3E
+2924: push
+2925: 0x33
+2926: dload
+2927: push
+2928: 0x2
+2929: add
+2930: push
+2931: 0x33
+2932: dstore
+2933: call
+2934: 0x0B
+2935: 0x3E
+2936: push
+2937: 0x33
+2938: dload
+2939: push
+2940: 0x34
+2941: add
+2942: push
+2943: 0x33
+2944: dstore
+2945: call
+2946: 0x0B
+2947: 0x3E
+2948: push
+2949: 0x33
+2950: dload
+2951: push
+2952: 0xa
+2953: add
+2954: push
+2955: 0x33
+2956: dstore
+2957: call
+2958: 0x0B
+2959: 0x3E
+2960: push
+2961: 0x33
+2962: dload
+2963: push
+2964: 0x30
+2965: add
+2966: push
+2967: 0x33
+2968: dstore
+2969: call
+2970: 0x0B
+2971: 0x3E
+2972: push
+2973: 0x33
+2974: dload
+2975: push
+2976: 0x2
+2977: add
+2978: push
+2979: 0x33
+2980: dstore
+2981: call
+2982: 0x0B
+2983: 0x3E
+2984: push
+2985: 0x33
+2986: dload
+2987: push
+2988: 0x2
+2989: add
+2990: push
+2991: 0x33
+2992: dstore
+2993: call
+2994: 0x0B
+2995: 0x3E
+2996: push
+2997: 0x33
+2998: dload
+2999: push
+3000: 0x2
+3001: add
+3002: push
+3003: 0x33
+3004: dstore
+3005: call
+3006: 0x0B
+3007: 0x3E
+3008: push
+3009: 0x33
+3010: dload
+3011: push
+3012: 0x2
+3013: add
+3014: push
+3015: 0x33
+3016: dstore
+3017: call
+3018: 0x0B
+3019: 0x3E
+3020: push
+3021: 0x33
+3022: dload
+3023: push
+3024: 0x2
+3025: add
+3026: push
+3027: 0x33
+3028: dstore
+3029: call
+3030: 0x0B
+3031: 0x3E
+3032: push
+3033: 0x33
+3034: dload
+3035: push
+3036: 0x2
+3037: add
+3038: push
+3039: 0x33
+3040: dstore
+3041: call
+3042: 0x0B
+3043: 0x3E
+3044: push
+3045: 0x33
+3046: dload
+3047: push
+3048: 0x30
+3049: add
+3050: push
+3051: 0x33
+3052: dstore
+3053: call
+3054: 0x0B
+3055: 0x3E
+3056: push
+3057: 0x33
+3058: dload
+3059: push
+3060: 0x4
+3061: add
+3062: push
+3063: 0x33
+3064: dstore
+3065: call
+3066: 0x0B
+3067: 0x3E
+3068: push
+3069: 0x33
+3070: dload
+3071: push
+3072: 0x6
+3073: add
+3074: push
+3075: 0x33
+3076: dstore
+3077: call
+3078: 0x0B
+3079: 0x3E
+3080: push
+3081: 0x33
+3082: dload
+3083: push
+3084: 0x4
+3085: add
+3086: push
+3087: 0x33
+3088: dstore
+3089: call
+3090: 0x0B
+3091: 0x3E
+3092: push
+3093: 0x33
+3094: dload
+3095: push
+3096: 0x2e
+3097: add
+3098: push
+3099: 0x33
+3100: dstore
+3101: call
+3102: 0x0B
+3103: 0x3E
+3104: push
+3105: 0x33
+3106: dload
+3107: push
+3108: 0x2
+3109: add
+3110: push
+3111: 0x33
+3112: dstore
+3113: call
+3114: 0x0B
+3115: 0x3E
+3116: push
+3117: 0x33
+3118: dload
+3119: push
+3120: 0x4
+3121: add
+3122: push
+3123: 0x33
+3124: dstore
+3125: call
+3126: 0x0B
+3127: 0x3E
+3128: push
+3129: 0x33
+3130: dload
+3131: push
+3132: 0x2
+3133: add
+3134: push
+3135: 0x33
+3136: dstore
+3137: call
+3138: 0x0B
+3139: 0x3E
+3140: push
+3141: 0x33
+3142: dload
+3143: push
+3144: 0x4
+3145: add
+3146: push
+3147: 0x33
+3148: dstore
+3149: call
+3150: 0x0B
+3151: 0x3E
+3152: push
+3153: 0x33
+3154: dload
+3155: push
+3156: 0x2
+3157: add
+3158: push
+3159: 0x33
+3160: dstore
+3161: call
+3162: 0x0B
+3163: 0x3E
+3164: push
+3165: 0x33
+3166: dload
+3167: push
+3168: 0x2e
+3169: add
+3170: push
+3171: 0x33
+3172: dstore
+3173: call
+3174: 0x0B
+3175: 0x3E
+3176: push
+3177: 0x33
+3178: dload
+3179: push
+3180: 0xe
+3181: add
+3182: push
+3183: 0x33
+3184: dstore
+3185: call
+3186: 0x0B
+3187: 0x3E
+3188: push
+3189: 0x33
+3190: dload
+3191: push
+3192: 0x30
+3193: add
+3194: push
+3195: 0x33
+3196: dstore
+3197: call
+3198: 0x0B
+3199: 0x3E
+3200: push
+3201: 0x33
+3202: dload
+3203: push
+3204: 0xa
+3205: add
+3206: push
+3207: 0x33
+3208: dstore
+3209: call
+3210: 0x0B
+3211: 0x3E
+3212: push
+3213: 0x33
+3214: dload
+3215: push
+3216: 0x34
+3217: add
+3218: push
+3219: 0x33
+3220: dstore
+3221: call
+3222: 0x0B
+3223: 0x3E
+3224: push
+3225: 0x33
+3226: dload
+3227: push
+3228: 0x2
+3229: add
+3230: push
+3231: 0x33
+3232: dstore
+3233: call
+3234: 0x0B
+3235: 0x3E
+3236: push
+3237: 0x33
+3238: dload
+3239: push
+3240: 0x2
+3241: add
+3242: push
+3243: 0x33
+3244: dstore
+3245: call
+3246: 0x0B
+3247: 0x3E
+3248: push
+3249: 0x33
+3250: dload
+3251: push
+3252: 0x2
+3253: add
+3254: push
+3255: 0x33
+3256: dstore
+3257: call
+3258: 0x0B
+3259: 0x3E
+3260: goto
+3261: 0x0F
+3262: 0xA0
+
+3263: push    #Icon laden (Kriesfregment des vergößerten Schlangenkopfes) / Siegscreen
+3264: 0x04
+3265: dload 
+3266: goto    #goto um nicht in Startpunkt zu zeichnen (nächster Block ist für das Zeichnen der beiden Icon Teile)
+3267: 0x0C
+3268: 0xCF
+
+3269: push
+3270: 0x33   #Adresse an Position x laden, beinhaltet Startpunkt des Victory/Niederlagenscreens (oberer Teil)
+3271: dload
+3272: dstore
+3273: push
+3274: 0x33    #Adresse an Position x laden + 1 (Unterer teil Icon)
+3275: dload
+3276: inc
+3277: dstore
+3278: return    #springt zur nächsten zeile nach letzten call
+
+3279: push    #Adresse an Position x um XX verschieben
+3280: 0x33    #Startpunkt fürs zeichnen
+3281: dload
+3282: push
+3283: 0x00    #Anzahl um wie viel Stellen nach links verschoben wird (wenn um eine Zeile nach unten = 1*60) ( x * 2 + y * 60 --> Ergebnis dann in hexa angeben ans Stelle XX)
+3284: add
+3285: push
+3286: 0x33
+3287: dstore   
+3288: call    #zum Zeichnen springen mit call
+3289: 0x0C
+3290: 0xC5    #das ist ein neues Icon (14/7)        
+
+3291: push      #Icons Sieg generieren
+3292: 0x33
+3293: dload
+3294: push
+3295: 0x2
+3296: add
+3297: push
+3298: 0x33
+3299: dstore
+3300: call
+3301: 0x0C
+3302: 0xC5
+3303: push
+3304: 0x33
+3305: dload
+3306: push
+3307: 0x2
+3308: add
+3309: push
+3310: 0x33
+3311: dstore
+3312: call
+3313: 0x0C
+3314: 0xC5
+3315: push
+3316: 0x33
+3317: dload
+3318: push
+3319: 0x2
+3320: add
+3321: push
+3322: 0x33
+3323: dstore
+3324: call
+3325: 0x0C
+3326: 0xC5
+3327: push
+3328: 0x33
+3329: dload
+3330: push
+3331: 0x34
+3332: add
+3333: push
+3334: 0x33
+3335: dstore
+3336: call
+3337: 0x0C
+3338: 0xC5
+3339: push
+3340: 0x33
+3341: dload
+3342: push
+3343: 0xa
+3344: add
+3345: push
+3346: 0x33
+3347: dstore
+3348: call
+3349: 0x0C
+3350: 0xC5
+3351: push
+3352: 0x33
+3353: dload
+3354: push
+3355: 0x30
+3356: add
+3357: push
+3358: 0x33
+3359: dstore
+3360: call
+3361: 0x0C
+3362: 0xC5
+3363: push
+3364: 0x33
+3365: dload
+3366: push
+3367: 0x4
+3368: add
+3369: push
+3370: 0x33
+3371: dstore
+3372: call
+3373: 0x0C
+3374: 0xC5
+3375: push
+3376: 0x33
+3377: dload
+3378: push
+3379: 0x6
+3380: add
+3381: push
+3382: 0x33
+3383: dstore
+3384: call
+3385: 0x0C
+3386: 0xC5
+3387: push
+3388: 0x33
+3389: dload
+3390: push
+3391: 0x4
+3392: add
+3393: push
+3394: 0x33
+3395: dstore
+3396: call
+3397: 0x0C
+3398: 0xC5
+3399: push
+3400: 0x33
+3401: dload
+3402: push
+3403: 0x2e
+3404: add
+3405: push
+3406: 0x33
+3407: dstore
+3408: call
+3409: 0x0C
+3410: 0xC5
+3411: push
+3412: 0x33
+3413: dload
+3414: push
+3415: 0x4
+3416: add
+3417: push
+3418: 0x33
+3419: dstore
+3420: call
+3421: 0x0C
+3422: 0xC5
+3423: push
+3424: 0x33
+3425: dload
+3426: push
+3427: 0x6
+3428: add
+3429: push
+3430: 0x33
+3431: dstore
+3432: call
+3433: 0x0C
+3434: 0xC5
+3435: push
+3436: 0x33
+3437: dload
+3438: push
+3439: 0x4
+3440: add
+3441: push
+3442: 0x33
+3443: dstore
+3444: call
+3445: 0x0C
+3446: 0xC5
+3447: push
+3448: 0x33
+3449: dload
+3450: push
+3451: 0x2e
+3452: add
+3453: push
+3454: 0x33
+3455: dstore
+3456: call
+3457: 0x0C
+3458: 0xC5
+3459: push
+3460: 0x33
+3461: dload
+3462: push
+3463: 0xa
+3464: add
+3465: push
+3466: 0x33
+3467: dstore
+3468: call
+3469: 0x0C
+3470: 0xC5
+3471: push
+3472: 0x33
+3473: dload
+3474: push
+3475: 0x2e
+3476: add
+3477: push
+3478: 0x33
+3479: dstore
+3480: call
+3481: 0x0C
+3482: 0xC5
+3483: push
+3484: 0x33
+3485: dload
+3486: push
+3487: 0x4
+3488: add
+3489: push
+3490: 0x33
+3491: dstore
+3492: call
+3493: 0x0C
+3494: 0xC5
+3495: push
+3496: 0x33
+3497: dload
+3498: push
+3499: 0x6
+3500: add
+3501: push
+3502: 0x33
+3503: dstore
+3504: call
+3505: 0x0C
+3506: 0xC5
+3507: push
+3508: 0x33
+3509: dload
+3510: push
+3511: 0x4
+3512: add
+3513: push
+3514: 0x33
+3515: dstore
+3516: call
+3517: 0x0C
+3518: 0xC5
+3519: push
+3520: 0x33
+3521: dload
+3522: push
+3523: 0x30
+3524: add
+3525: push
+3526: 0x33
+3527: dstore
+3528: call
+3529: 0x0C
+3530: 0xC5
+3531: push
+3532: 0x33
+3533: dload
+3534: push
+3535: 0x4
+3536: add
+3537: push
+3538: 0x33
+3539: dstore
+3540: call
+3541: 0x0C
+3542: 0xC5
+3543: push
+3544: 0x33
+3545: dload
+3546: push
+3547: 0x2
+3548: add
+3549: push
+3550: 0x33
+3551: dstore
+3552: call
+3553: 0x0C
+3554: 0xC5
+3555: push
+3556: 0x33
+3557: dload
+3558: push
+3559: 0x4
+3560: add
+3561: push
+3562: 0x33
+3563: dstore
+3564: call
+3565: 0x0C
+3566: 0xC5
+3567: push
+3568: 0x33
+3569: dload
+3570: push
+3571: 0x34
+3572: add
+3573: push
+3574: 0x33
+3575: dstore
+3576: call
+3577: 0x0C
+3578: 0xC5
+3579: push
+3580: 0x33
+3581: dload
+3582: push
+3583: 0x2
+3584: add
+3585: push
+3586: 0x33
+3587: dstore
+3588: call
+3589: 0x0C
+3590: 0xC5
+3591: push
+3592: 0x33
+3593: dload
+3594: push
+3595: 0x2
+3596: add
+3597: push
+3598: 0x33
+3599: dstore
+3600: call
+3601: 0x0C
+3602: 0xC5
+3603: push
+3604: 0x33
+3605: dload
+3606: push
+3607: 0x2
+3608: add
+3609: push
+3610: 0x33
+3611: dstore
+3612: call
+3613: 0x0C
+3614: 0xC5   
+3615: goto
+3616: 0x0F
+3617: 0xA0
 
 4097:0x7e           #Startbildschirm (wird generiert durch laden von "snake_memory.txt"), mit allen Ränder (Adressen 4097 bis 8849 ohne Kopf und Segment), Schlangenkopf (Adressen 6616 bis 6623) und einem Segment (Adressen 6624 bis 6631)
 4098:0x7e
@@ -1337,5 +2117,70 @@
 7421:0x7e
 7422:0x3c
 7423:0x00
+
+4840:0x20
+4841:0x10
+4842:0x3c
+4843:0x7e
+4844:0x7e
+4845:0x7e
+4846:0x3c
+4847:0x00
+
+4688:0x20
+4689:0x10
+4690:0x3c
+4691:0x7e
+4692:0x7e
+4693:0x7e
+4694:0x3c
+4695:0x00
+
+8208:0x20
+8209:0x10
+8210:0x3c
+8211:0x7e
+8212:0x7e
+8213:0x7e
+8214:0x3c
+8215:0x00
+
+5512:0x20
+5513:0x10
+5514:0x3c
+5515:0x7e
+5516:0x7e
+5517:0x7e
+5518:0x3c
+5519:0x00
+
+6328:0x20
+6329:0x10
+6330:0x3c
+6331:0x7e
+6332:0x7e
+6333:0x7e
+6334:0x3c
+6335:0x00
+
+8576:0x20
+8577:0x10
+8578:0x3c
+8579:0x7e
+8580:0x7e
+8581:0x7e
+8582:0x3c
+8583:0x00
+
+8536:0x20
+8537:0x10
+8538:0x3c
+8539:0x7e
+8540:0x7e
+8541:0x7e
+8542:0x3c
+8543:0x00
+
+
 
 
