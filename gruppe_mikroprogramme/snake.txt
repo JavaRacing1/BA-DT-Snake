@@ -502,26 +502,34 @@
 
 2611: pop
 2612: pop
-2613: push              #Adresse des alten Schwanzes laden
-2614: 0x18
+
+2613: push              #Prüfen, ob Flag zum löschen vom alten Schwanz 1 ist
+2614: 0x32
 2615: dload
-2616: dup               #1. Teil des alten Schwanzes überschreiben
-2617: push
-2618: 0x00
-2619: swap
-2620: dstore
-2621: pop
-2622: push              #2. Teil des alten Schwanzes überschreiben
-2623: 0x01
-2624: add
-2625: push
-2626: 0x00
-2627: swap
-2628: dstore
-2629: pop
-2630: goto
-2631: 0x08
-2632: 0x00
+2616: jmnz              #Zum Start springen
+2617: 0x0B
+2618: 0x0E
+2619: pop
+2620: push              #Adresse des alten Schwanzes laden
+2621: 0x18
+2622: dload
+2623: dup               #1. Teil des alten Schwanzes überschreiben
+2624: push
+2625: 0x00
+2626: swap
+2627: dstore
+2628: pop
+2629: push              #2. Teil des alten Schwanzes überschreiben
+2630: 0x01
+2631: add
+2632: push
+2633: 0x00
+2634: swap
+2635: dstore
+2636: pop
+2637: goto
+2638: 0x08
+2639: 0x00
 
 2640: pop
 2641: pop
@@ -663,10 +671,70 @@
                     #NiederlagenScreen (Adressen 2780 bis 2787 ist ein Randiconoberteil)
 
 
-2780:               #Neues Körperteil hinzufügen wenn Anzahl der Früchte sich verändert hat
-2847: goto
-2848: 0x09
-2849: 0xC4
+2780: push          #Anzahl der Fürchte laden    #Neues Körperteil hinzufügen wenn Anzahl der Früchte sich verändert hat
+2781: 0x1F
+2782: dload
+2783: push          #Hilfsvariable für Früchte laden
+2784: 0x2E
+2785: dload
+2786: jmc           #Prüfen ob Frucht eingesammelt wurde, falls nein -> zur Anzeige
+2787: 0x09
+2788: 0xC4
+2789: pop
+2790: push          #Hilfsvariable aktualisieren
+2791: 0x2E
+2792: dstore
+
+2793: push           #Hilfsvariable für Iteration mit Adresse 12 initialisieren
+2794: 0x0C
+2795: push        
+2796: 0x31
+2797: dstore
+2798: pop
+
+2799: push          #Schleife: Körperteil aus Hilfsadresse laden
+2800: 0x31
+2801: dload 
+2802: dup           #Körperteiladresse verdoppeln, wird noch benötigt
+2803: dload
+2804: jmz           #Prüfen ob Körperteil belegt ist
+2805: 0x0A
+2806: 0xFD
+2807: pop
+2808: inc           #Körperteiladresse erhöhen
+2809: push
+2810: 0x31
+2811: dstore
+2812: pop
+2813: goto          #Zum Schleifenbeginn springen
+2814: 0x0A
+2815: 0xEF
+2816: pop
+2817: push          #Neues Körperteil speichern -> Position wird aus Adresse 24 geholt
+2818: 0x18
+2819: dload
+2820: swap
+2821: dstore
+2822: pop
+2823: push          #Flag setzen, damit Körperteil nicht überschrieben wird
+2824: 0x01
+2825: push              
+2826: 0x32
+2827: dstore
+2828: pop
+2829: goto          #Zur Anzeige springen
+2830: 0x09
+2831: 0xC4
+
+2835: push              #Flag zurücksetzen
+2836: 0x00
+2837: push
+2838: 0x32
+2839: dstore
+2840: pop
+2841: goto
+2842: 0x08
+2843: 0x00
 
 4097:0x7e           #Startbildschirm (wird generiert durch laden von "snake_memory.txt"), mit allen Ränder (Adressen 4097 bis 8849 ohne Kopf und Segment), Schlangenkopf (Adressen 6616 bis 6623) und einem Segment (Adressen 6624 bis 6631)
 4098:0x7e
