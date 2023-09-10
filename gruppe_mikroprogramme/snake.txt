@@ -46,14 +46,10 @@
 1168:0x1D
 1172:0x00
 1173:0x03
-1176
-1180
-1184
-1188
-1192
-1196
-1200
-1204
+1176:0x3E
+1177:0x06
+
+
 
 
 2048: goto              #Nutzereingabe zwischenspeichern
@@ -599,7 +595,8 @@
 2712: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
 2713:
 2714:
-2715: pop
+2715: push
+2716: pop
 2716: push            #Laden Frucht 2
 2717: 0x27
 2718: dload
@@ -650,6 +647,8 @@
 2764:
 2765: pop
 2766: pop
+
+
 2767: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
 2768: 0x1F
 2769: dload
