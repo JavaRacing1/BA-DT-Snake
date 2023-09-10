@@ -58,7 +58,7 @@
 
 2048: goto              #Nutzereingabe zwischenspeichern
 2049: 0x08
-2050: 0x36
+2050: 0x38
 
 2052: dload             #Wert der Kopfadresse in 1. Hilfsvariable speichern
 2053: push
@@ -110,28 +110,31 @@
 2091: push               #Eingabe mit zwischengespeicherter Eingabe erstezen
 2092: 0x1B
 2093: dload
-2094: push
-2095: 0x1C
-2097: dstore
-2098: pop
+2094: jmz               #Prüfen ob zwischengespeicherter Wert null ist -> Eingabe einlesen
+2095: 0x08
+2096: 0x00
+2097: push
+2098: 0x1C
+2099: dstore
+2100: pop
 
-2099: goto              #Schleife neustarten
-2100: 0x08
-2101: 0x3E
+2101: goto              #Schleife neustarten
+2102: 0x08
+2103: 0x40
 
-2102: push
-2103: 0x25
-2104: dload
-2105: dload
-2106: push
-2107: 0x1C
-2108: dstore
-2109: pop
-2110: push              #Adresse für Wert der Kopfadresse pushen
-2111: 0x0A
-2112: goto
-2113: 0x08
-2114: 0x03
+2104: push
+2105: 0x25
+2106: dload
+2107: dload
+2108: push
+2109: 0x1C
+2110: dstore
+2111: pop
+2112: push              #Adresse für Wert der Kopfadresse pushen
+2113: 0x0A
+2114: goto
+2115: 0x08
+2116: 0x03
 
 2120: pop               #Bewegung nach unten (Code-/ Spielablaufbeginn)
 2121: pop
