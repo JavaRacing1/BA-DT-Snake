@@ -66,6 +66,8 @@
 1205:0x07
 1212:0x00          #Hilfsadress 47
 1216:0x01          #Hilfsadresse 48
+1228:0xC0          #Hilfsvariable Zeichnen screens
+1229:0x04
 
 2048: goto              #Nutzereingabe zwischenspeichern
 2049: 0x08
@@ -320,8 +322,8 @@
 2314: 0x23
 2315: dload
 2316: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2317: 0x0A
-2318: 0xDC
+2317: 0x0B
+2318: 0x38
 2319: pop
 2320: pop
 2327: goto
@@ -347,8 +349,8 @@
 2354: 0x22
 2355: dload
 2356: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2357: 0x0A
-2358: 0xDC
+2357: 0x0B
+2358: 0x38
 2359: pop
 2360: pop
 2367: goto
@@ -374,8 +376,8 @@
 2394: 0x22
 2395: dload
 2396: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2397: 0x0A
-2398: 0xDC
+2397: 0x0B
+2398: 0x38
 2399: pop
 2400: pop
 2407: goto
@@ -401,8 +403,8 @@
 2434: 0x24
 2435: dload
 2436: jmc               #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2437: 0x0A
-2438: 0xDC
+2437: 0x0B
+2438: 0x38
 2439: pop
 2440: pop
 2447: goto
@@ -551,148 +553,212 @@
 2654: 0x0D            #Bildschirmadresse Segment 3 
 2655: dload
 2656: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2657:
-2658:
+2657: 0x0B
+2658: 0x38
 2659: pop
 2660: push
 2661: 0x0E            #Bildschirmadresse Segment 4 
 2662: dload
 2663: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2664:
-2665:
+2664: 0x0B
+2665: 0x38
 2666: pop
 2667: push
 2668: 0x0F            #Bildschirmadresse Segment 5 
 2669: dload
 2670: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2671:
-2672:
+2671: 0x0B
+2672: 0x38
 2673: pop
 2674: push
 2675: 0x10            #Bildschirmadresse Segment 6
 2676: dload
 2677: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2678:
-2679:
+2678: 0x0B 
+2679: 0x38
 2680: pop
 2681: push
 2682: 0x11            #Bildschirmadresse Segment 7 
 2683: dload
 2684: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2685:
-2686:
+2685: 0x0B
+2686: 0x38
 2687: pop
 2688: push
 2689: 0x12            #Bildschirmadresse Segment 8 
 2690: dload
 2691: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2692:
-2693:
+2692: 0x0B
+2693: 0x38
 2694: pop
 2695: push
 2696: 0x13            #Bildschirmadresse Segment 9 
 2697: dload
 2698: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2699:
-2700:
+2699: 0x0B
+2700: 0x38
 2701: pop
 2702: push
 2703: 0x14            #Bildschirmadresse Segment 10 
 2704: dload
 2705: jmc             #Vergleich, True-Fall Niederlage, zum Code ScreenNiederlageLaden gehen
-2706:
-2707:
+2706: 0x0B
+2707: 0x38
 2708: pop
 
 2709: push            #Beginn Vergleich Kopf Frucht, 8 Früchte für Spiel, Frucht 1 vorinitialisert durch Spielstart
 2710: 0x26
 2711: dload
 2712: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2713:
-2714:
+2713: 0x0B
+2714: 0x22
 2715: push
 2716: pop
 2716: push            #Laden Frucht 2
 2717: 0x27
 2718: dload
 2719: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2720:
-2721:
+2720: 0x0B
+2721: 0x22 
 2722: pop
 2723: push            #Laden Frucht 3
 2724: 0x28
 2725: dload
 2726: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2728:
-2729:
+2728: 0x0B
+2729: 0x22
 2730: pop
 2731: push            #Laden Frucht 4
 2732: 0x29
 2733: dload
 2734: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2735:
-2736:
+2735: 0x0B
+2736: 0x22 
 2737: pop
 2738: push            #Laden Frucht 5
 2739: 0x2A
 2740: dload
 2741: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2742:
-2743:
+2742: 0x0B
+2743: 0x22
 2744: pop
 2745: push            #Laden Frucht 6
 2746: 0x2B
 2747: dload
 2748: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2749:
-2750:
+2749: 0x0B
+2750: 0x22
 2751: pop
 2752: push            #Laden Frucht 7
 2753: 0x2C
 2754: dload
 2755: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2756:
-2757:
+2756: 0x0B
+2757: 0x22
 2758: pop
 2759: push            #Laden Frucht 8
 2760: 0x2D
 2761: dload
-2762: jmc             #Vergleich, True-Fall zu Code SiegScreenLaden gehen
-2763:
-2764:
+2762: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
+2763: 0x0B
+2764: 0x22
 2765: pop
 2766: pop
 
 
-2767: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
-2768: 0x1F
-2769: dload
-2770: inc
-2771: push
-2772: 0x1F
-2773: dstore
-2774: pop
-2775: goto
-2776: 0x08          #08C0 = Adresse 2240 = Nachziehen Körpersegmente (zweiter Schritt Bewegung, vor Anpassung Console)
-2777: 0xC0
-                    #NiederlagenScreen (Adressen 2780 bis 2787 ist ein Randiconoberteil)
-2780: push              
-2781: 0x04
-2782: dload
-2783: push  
-2784: 0x04
-2785: 0x00
-2786: dstore
-2787: pop
-2788: push              
-2789: 0x05
-2790: dload
-2791: push  
-2792: 0x04
-2793: 0x01
-2794: dstore
-2795: pop
-                  #das ist ein Randicon, das jetzt noch 95 mal
+2850: push           #Vergleich maximale Früchte mit aktuellen Früchten für Siegscreen laden
+2851: 0x21            #Hilfsvariable maximale Früchte
+2852: dload
+2853: push
+2854: 0x1F           #Hilfsvariable Zustand_sieg laden 
+2855: dload
+2856: jmc             #Vergleich, True-Fall Sieg, zum Code ScreenSieg gehen
+2857: 0x0C
+2858: 0x38
+2859: pop
+2860: pop
+2861: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
+2862: 0x1F
+2863: dload
+2864: inc
+2865: push
+2866: 0x1F
+2867: dstore
+2868: pop
+2869: goto
+2870: 0x08
+2871: 0xC0
+
+2872: push    #Icon laden (Kriesfregment des vergößerten Schlangenkopfes) / NierlagenScreen
+2873: 0x04
+2874: dload 
+2875: goto    #goto um nicht in Startpunkt zu zeichnen (nächster Block ist für das Zeichnen der beiden Icon Teile)
+2876: 0x0B
+2877: 0x48
+
+2878: push
+2879: 0x33   #Adresse an Position x laden, beinhaltet Startpunkt des Victory/Niederlagenscreens (oberer Teil)
+2880: dload
+2881: dstore
+2882: push
+2883: 0x33    #Adresse an Position x laden + 1 (Unterer teil Icon)
+2884: dload
+2885: inc
+2886: dstore
+2887:return    #springt zur nächsten zeile nach letzten call
+
+2888: push    #Adresse an Position x um XX verschieben
+2889: 0x33    #Startpunkt fürs zeichnen
+2890: dload
+2891: push
+2892: 0x00    #Anzahl um wie viel Stellen nach links verschoben wird (wenn um eine Zeile nach unten = 1*60) ( x * 2 + y * 60 --> Ergebnis dann in hexa angeben ans Stelle XX)
+2893: add
+2894: push
+2895: 0x33
+2896: dstore   
+2897: call    #zum Zeichnen springen mit call
+2898: 0x0B
+2899: 0x3E    #das ist ein neues Icon (14/7)
+
+
+
+
+3128: push    #Icon laden (Kriesfregment des vergößerten Schlangenkopfes) / Siegscreen
+3129: 0x04
+3130: dload 
+3131: goto    #goto um nicht in Startpunkt zu zeichnen (nächster Block ist für das Zeichnen der beiden Icon Teile)
+3132: 0x0C
+3133: 0x48
+
+3134: push
+3135: 0x33   #Adresse an Position x laden, beinhaltet Startpunkt des Victory/Niederlagenscreens (oberer Teil)
+3136: dload
+3137: dstore
+3138: push
+3139: 0x33    #Adresse an Position x laden + 1 (Unterer teil Icon)
+3140: dload
+3141: inc
+3142: dstore
+3143:return    #springt zur nächsten zeile nach letzten call
+
+3144: push    #Adresse an Position x um XX verschieben
+3145: 0x33    #Startpunkt fürs zeichnen
+3146: dload
+3147: push
+3148: 0x00    #Anzahl um wie viel Stellen nach links verschoben wird (wenn um eine Zeile nach unten = 1*60) ( x * 2 + y * 60 --> Ergebnis dann in hexa angeben ans Stelle XX)
+3149: add
+3150: push
+3151: 0x33
+3152: dstore   
+3153: call    #zum Zeichnen springen mit call
+3154: 0x0C
+3155: 0x3E    #das ist ein neues Icon (14/7)        
+
+   
+
+
+                  
+                  
 
 4097:0x7e           #Startbildschirm (wird generiert durch laden von "snake_memory.txt"), mit allen Ränder (Adressen 4097 bis 8849 ohne Kopf und Segment), Schlangenkopf (Adressen 6616 bis 6623) und einem Segment (Adressen 6624 bis 6631)
 4098:0x7e
@@ -1325,38 +1391,38 @@
 5512:0x20
 5513:0x10
 5514:0x3c
-4691:0x7e
-4692:0x7e
-4693:0x7e
-4694:0x3c
-4695:0x00
+5515:0x7e
+5516:0x7e
+5517:0x7e
+5518:0x3c
+5519:0x00
 
-4688:0x20
-4689:0x10
-4690:0x3c
-4691:0x7e
-4692:0x7e
-4693:0x7e
-4694:0x3c
-4695:0x00
+6328:0x20
+6329:0x10
+6330:0x3c
+6331:0x7e
+6332:0x7e
+6333:0x7e
+6334:0x3c
+6335:0x00
 
-4688:0x20
-4689:0x10
-4690:0x3c
-4691:0x7e
-4692:0x7e
-4693:0x7e
-4694:0x3c
-4695:0x00
+8576:0x20
+8577:0x10
+8578:0x3c
+8579:0x7e
+8580:0x7e
+8581:0x7e
+8582:0x3c
+8583:0x00
 
-4688:0x20
-4689:0x10
-4690:0x3c
-4691:0x7e
-4692:0x7e
-4693:0x7e
-4694:0x3c
-4695:0x00
+8536:0x20
+8537:0x10
+8538:0x3c
+8539:0x7e
+8540:0x7e
+8541:0x7e
+8542:0x3c
+8543:0x00
 
 
 
