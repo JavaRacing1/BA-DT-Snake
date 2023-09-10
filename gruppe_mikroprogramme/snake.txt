@@ -294,8 +294,8 @@
 2287: push
 2288: 0x00
 2289: jmc               #Sprung zur Anzeige
-2290: 0x09
-2291: 0xC4
+2290: 0x0A
+2291: 0xDC
 2292: pop
 2293: pop
 2294: goto              #Wiederholen
@@ -662,23 +662,12 @@
 2776: 0x08          #08C0 = Adresse 2240 = Nachziehen Körpersegmente (zweiter Schritt Bewegung, vor Anpassung Console)
 2777: 0xC0
                     #NiederlagenScreen (Adressen 2780 bis 2787 ist ein Randiconoberteil)
-2780: push              
-2781: 0x04
-2782: dload
-2783: push  
-2784: 0x04
-2785: 0x00
-2786: dstore
-2787: pop
-2788: push              
-2789: 0x05
-2790: dload
-2791: push  
-2792: 0x04
-2793: 0x01
-2794: dstore
-2795: pop
-                  #das ist ein Randicon, das jetzt noch 95 mal
+
+
+2780:               #Neues Körperteil hinzufügen wenn Anzahl der Früchte sich verändert hat
+2847: goto
+2848: 0x09
+2849: 0xC4
 
 4097:0x7e           #Startbildschirm (wird generiert durch laden von "snake_memory.txt"), mit allen Ränder (Adressen 4097 bis 8849 ohne Kopf und Segment), Schlangenkopf (Adressen 6616 bis 6623) und einem Segment (Adressen 6624 bis 6631)
 4098:0x7e
