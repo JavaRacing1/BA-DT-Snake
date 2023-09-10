@@ -291,7 +291,7 @@
 2288: 0x00
 2289: jmc               #Sprung zur Anzeige
 2290: 0x0A
-2291: 0xDC
+2291: 0xDA
 2292: pop
 2293: pop
 2294: goto              #Wiederholen
@@ -670,7 +670,8 @@
 2777: 0xC0
                     #NiederlagenScreen (Adressen 2780 bis 2787 ist ein Randiconoberteil)
 
-
+2778: pop
+2779: pop
 2780: push          #Anzahl der Fürchte laden    #Neues Körperteil hinzufügen wenn Anzahl der Früchte sich verändert hat
 2781: 0x1F
 2782: dload
