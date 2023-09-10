@@ -525,7 +525,7 @@
 2615: dload
 2616: jmnz              #Zum Start springen
 2617: 0x0B
-2618: 0x0E
+2618: 0x15
 2619: pop
 2620: push              #Adresse des alten Schwanzes laden
 2621: 0x18
@@ -620,8 +620,7 @@
 2712: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
 2713: 0x0B
 2714: 0x22
-2715: push
-2716: pop
+2715: pop
 2716: push            #Laden Frucht 2
 2717: 0x27
 2718: dload
@@ -633,8 +632,8 @@
 2724: 0x28
 2725: dload
 2726: jmc             #Vergleich, True-Fall AnzahlFrucht um eins erhöhen
-2728: 0x0B
-2729: 0x22
+2727: 0x0B
+2728: 0x22
 2730: pop
 2731: push            #Laden Frucht 4
 2732: 0x29
@@ -672,6 +671,9 @@
 2764: 0x22
 2765: pop
 2766: pop
+2767: goto
+2768: 0x08
+2769: 0xC0
 
 2778: pop
 2779: pop
@@ -688,57 +690,62 @@
 2790: push          #Hilfsvariable aktualisieren
 2791: 0x2E
 2792: dstore
+2793: pop
 
-2793: push           #Hilfsvariable für Iteration mit Adresse 12 initialisieren
-2794: 0x0C
-2795: push        
-2796: 0x31
-2797: dstore
-2798: pop
+2794: push           #Hilfsvariable für Iteration mit Adresse 12 initialisieren
+2795: 0x0C
+2796: push        
+2797: 0x31
+2798: dstore
+2799: pop
 
-2799: push          #Schleife: Körperteil aus Hilfsadresse laden
-2800: 0x31
-2801: dload 
-2802: dup           #Körperteiladresse verdoppeln, wird noch benötigt
+2800: push          #Schleife: Körperteil aus Hilfsadresse laden
+2801: 0x31
+2802: dload 
 2803: dload
 2804: jmz           #Prüfen ob Körperteil belegt ist
-2805: 0x0A
-2806: 0xFD
+2805: 0x0B
+2806: 0x03
 2807: pop
-2808: inc           #Körperteiladresse erhöhen
-2809: push
-2810: 0x31
-2811: dstore
-2812: pop
-2813: goto          #Zum Schleifenbeginn springen
-2814: 0x0A
-2815: 0xEF
-2816: pop
-2817: push          #Neues Körperteil speichern -> Position wird aus Adresse 24 geholt
-2818: 0x18
-2819: dload
-2820: swap
-2821: dstore
-2822: pop
-2823: push          #Flag setzen, damit Körperteil nicht überschrieben wird
-2824: 0x01
-2825: push              
-2826: 0x32
-2827: dstore
-2828: pop
-2829: goto          #Zur Anzeige springen
-2830: 0x09
-2831: 0xC4
+2808: push
+2809: 0x31
+2810: dload
+2811: inc           #Körperteiladresse erhöhen
+2812: push
+2813: 0x31
+2814: dstore
+2815: pop
+2816: goto          #Zum Schleifenbeginn springen
+2817: 0x0A
+2818: 0xF0
+2819: pop
+2820: push          #Neues Körperteil speichern -> Position wird aus Adresse 24 geholt
+2821: 0x18
+2822: dload
+2823: push
+2824: 0x31
+2825: dload
+2826: dstore
+2827: pop
+2828: push          #Flag setzen, damit Körperteil nicht überschrieben wird
+2829: 0x01
+2830: push              
+2831: 0x32
+2832: dstore
+2833: pop
+2834: goto          #Zur Anzeige springen
+2835: 0x09
+2836: 0xC4
 
-2835: push              #Flag zurücksetzen
-2836: 0x00
-2837: push
-2838: 0x32
-2839: dstore
-2840: pop
-2841: goto
-2842: 0x08
-2843: 0x00
+2837: push              #Flag zurücksetzen
+2838: 0x00
+2839: push
+2840: 0x32
+2841: dstore
+2842: pop
+2843: goto
+2844: 0x08
+2845: 0x00
 
 2850: push           #Vergleich maximale Früchte mit aktuellen Früchten für Siegscreen laden
 2851: 0x21            #Hilfsvariable maximale Früchte
@@ -2109,6 +2116,7 @@
 6629:0x81
 6630:0x42
 6631:0x3c
+
 7416:0x20             #Adresse erste Frucht
 7417:0x10
 7418:0x3c
