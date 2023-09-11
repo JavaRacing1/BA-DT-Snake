@@ -747,24 +747,24 @@
 2844: 0x08
 2845: 0x00
 
-2850: push           #Vergleich maximale Früchte mit aktuellen Früchten für Siegscreen laden
-2851: 0x21            #Hilfsvariable maximale Früchte
+2850: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
+2851: 0x1F
 2852: dload
-2853: push
-2854: 0x1F           #Hilfsvariable Zustand_sieg laden 
-2855: dload
-2856: jmc             #Vergleich, True-Fall Sieg, zum Code ScreenSieg gehen
-2857: 0x0C
-2858: 0xC4
-2859: pop
-2860: pop
-2861: push           #Erhöhen der AnzahlFrucht Hilfsvariable um 1, Laden Hilfsvariable
-2862: 0x1F
+2853: inc
+2854: push
+2855: 0x1F
+2856: dstore
+2857: pop
+2858: push           #Vergleich maximale Früchte mit aktuellen Früchten für Siegscreen laden
+2859: 0x21            #Hilfsvariable maximale Früchte
+2860: dload
+2861: push
+2862: 0x1F           #Hilfsvariable Zustand_sieg laden 
 2863: dload
-2864: inc
-2865: push
-2866: 0x1F
-2867: dstore
+2864: jmc             #Vergleich, True-Fall Sieg, zum Code ScreenSieg gehen
+2865: 0x0C
+2866: 0xC4
+2867: pop
 2868: pop
 2869: goto
 2870: 0x08
