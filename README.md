@@ -9,6 +9,7 @@ Dieses Projekt ist eine Implementierung von Snake in der Oktopus-Maschine.
 - snake.txt -> Programmcode von Snake mit Kommentaren und uncodierten Befehlen
 - stackmaschine.py -> Die eigensprogrammierte Stackmaschine zum Testen von Mikroprogrammcode außerhalb der Oktopus-Maschine
 - snake_code.py -> Vereinfachte Implementation von Snake für die Stackmaschine
+- stachmaschine.txt -> Speicher, der beim Start der Stackmaschine geladen wird
 
 ## Anforderungen
 - Python 3.11
