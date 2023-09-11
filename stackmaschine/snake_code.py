@@ -11,10 +11,10 @@ def loop_init(widget: tk.Tk, __machine: maschine):
     machine = __machine
 
     global delay
-    delay = 2000
+    delay = 1000
 
     #Einmaliger Code hier hin
-
+    machine.load_memory("stackmaschine.txt")
 
     #Adresse Kopf speichern
     machine.push(4864)
